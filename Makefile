@@ -5,6 +5,7 @@ all: src/generated/lex.py src/generated/parse.py
 
 test: all
 	python test/run_tests.py lex ./main_lexer.py test/tests/lex
+	python test/run_tests.py parse ./main.py test/tests/parse
 
 src/generated/lex.py: grammar/lex.g4
 	cd grammar && $(ANTLR) lex.g4 $(ANTLR_OPTIONS)

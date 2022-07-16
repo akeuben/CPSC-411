@@ -18,7 +18,7 @@
                 pkgs.graphviz
             ];
 
-            runScript = "bash";
+            runScript = "fish";
 
             profile = ''
                 if [ ! -d .venv ]; then

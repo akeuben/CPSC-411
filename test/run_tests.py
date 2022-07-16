@@ -3,7 +3,7 @@ import os
 import sys
 
 def usage():
-    print(f"Usage: {sys.argv[0]} lex <lexer path> <test dir>") 
+    print(f"Usage: {sys.argv[0]} lex|parse <executable path> <test dir>") 
     sys.exit(1)
 
 def main():
@@ -26,7 +26,7 @@ def main():
         else:
             successCount += r
 
-    print(f">> Summary: {successCount}/{count} tests passed")
+    print(f">> Summary ({compilerType}): {successCount}/{count} tests passed")
 
 def checkResult(result):
     file = result["path"]

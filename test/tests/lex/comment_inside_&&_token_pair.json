@@ -1,1 +1,1 @@
-{"stdout": "<EOF> @ line 4, attr '<EOF>'\n", "stderr": "warning: unknown char at or near line 2\nwarning: unknown char at or near line 3\n", "path": "/home/csusers/avery.keuben/CPSC-411/test/tests/lex/comment_inside_&&_token_pair.j--", "exit_code": 0}
+{"stdout": "<EOF> @ line 4, attr '<EOF>'\n", "stderr": "warning: unknown char at or near line 2\nwarning: unknown char at or near line 3\n", "path": "/home/csusers/avery.keuben/CPSC-411/test/./tests/lex/comment_inside_&&_token_pair.j--", "exit_code": 0}

@@ -1,1 +1,1 @@
-{"stdout": "", "stderr": "error: CR in string at or near line 2\n", "path": "/home/csusers/avery.keuben/CPSC-411/test/tests/lex/string_containing_CR.j--", "exit_code": 1}
+{"stdout": "", "stderr": "error: CR in string at or near line 2\n", "path": "/home/csusers/avery.keuben/CPSC-411/test/./tests/lex/string_containing_CR.j--", "exit_code": 1}

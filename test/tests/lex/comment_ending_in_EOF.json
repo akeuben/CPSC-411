@@ -1,1 +1,1 @@
-{"stdout": "<EOF> @ line 1, attr '<EOF>'\n", "stderr": "", "path": "/home/csusers/avery.keuben/CPSC-411/test/tests/lex/comment_ending_in_EOF.j--", "exit_code": 0}
+{"stdout": "<EOF> @ line 1, attr '<EOF>'\n", "stderr": "", "path": "/home/csusers/avery.keuben/CPSC-411/test/./tests/lex/comment_ending_in_EOF.j--", "exit_code": 0}

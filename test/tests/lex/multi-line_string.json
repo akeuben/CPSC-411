@@ -1,1 +1,1 @@
-{"stdout": "", "stderr": "error: NL in string at or near line 2\n", "path": "/home/csusers/avery.keuben/CPSC-411/test/tests/lex/multi-line_string.j--", "exit_code": 1}
+{"stdout": "", "stderr": "error: NL in string at or near line 2\n", "path": "/home/csusers/avery.keuben/CPSC-411/test/./tests/lex/multi-line_string.j--", "exit_code": 1}

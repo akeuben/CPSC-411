@@ -1,0 +1,7 @@
+//  precedence test
+
+main()
+{
+	x = 2 + 3 * 5;
+	x = (2 + 3) * 5;
+}

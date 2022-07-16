@@ -1,1 +1,1 @@
-{"stdout": "STRING @ line 1, attr '\"this is a string \\x0c with a form feed\"'\n<EOF> @ line 2, attr '<EOF>'\n", "stderr": "", "path": "/home/csusers/avery.keuben/CPSC-411/test/tests/lex/string_form_feed.j--", "exit_code": 0}
+{"stdout": "STRING @ line 1, attr '\"this is a string \\x0c with a form feed\"'\n<EOF> @ line 2, attr '<EOF>'\n", "stderr": "", "path": "/home/csusers/avery.keuben/CPSC-411/test/./tests/lex/string_form_feed.j--", "exit_code": 0}

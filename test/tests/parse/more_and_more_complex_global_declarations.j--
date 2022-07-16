@@ -1,0 +1,21 @@
+// a more involved set of global declarations
+
+int foo;
+boolean bar;
+
+void f1() {
+	return;
+}
+
+int f2(int i)
+{
+	return i;
+}
+
+main()
+{}
+
+boolean f3(int i, boolean b)
+{
+	return false;
+}

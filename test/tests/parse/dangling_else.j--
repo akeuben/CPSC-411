@@ -1,0 +1,9 @@
+// dangling-else: ensure else matches the appropriate if
+
+main() {
+	if (true)
+		if (true)
+			;
+		else
+			;
+}

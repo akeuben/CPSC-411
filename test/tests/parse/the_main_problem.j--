@@ -1,0 +1,11 @@
+// the main function needn't be called "main"
+//
+// note that while an argument to the main function is a syntax error per the
+//	grammar, it's easy to make a small modification to the grammar to
+//	allow arguments for main syntactically, and then catch the error
+//	during semantic checking, which allows a much more specific error
+//	message to be printed rather than just a generic syntax error
+
+startMeUp(int error)
+{
+}

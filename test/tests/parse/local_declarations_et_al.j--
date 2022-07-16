@@ -1,0 +1,20 @@
+// declarations and statements and blocks, oh my
+//
+// declaration of local variables inside nested blocks *could* be caught
+//	in the parser, but it'd complicate the grammar, so leave that for
+//	semantic checking
+
+main() {
+	boolean x;
+	while (x) {
+		int foo;
+		break;
+		;
+		;
+		;
+		{ }
+
+		{ int bar; }
+	}
+	break;
+}

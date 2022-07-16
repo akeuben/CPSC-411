@@ -1,0 +1,14 @@
+// formal and actual arg structure
+
+void foo() {}
+
+boolean bar(int a1, boolean a2, int a3) {
+}
+
+int baz() {
+	blarg(
+		123 + 456,
+		garble(789, a, b * c),
+		true,
+		greep(false, "eek"));
+}

@@ -1,0 +1,1 @@
+{"stdout": "program (lineno=4)\n    globVarDecl (lineno=4)\n        int (attr='int', lineno=4)\n        id (attr='foo', lineno=4)\n    globVarDecl (lineno=5)\n        bool (attr='boolean', lineno=5)\n        id (attr='bar', lineno=5)\n", "stderr": "", "path": "/home/csusers/avery.keuben/CPSC-411/test/./tests/parse/global_variable_declarations.j--", "exit_code": 0}

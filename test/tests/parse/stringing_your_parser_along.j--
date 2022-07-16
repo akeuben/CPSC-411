@@ -1,0 +1,9 @@
+// string arguments and some built-in functions
+
+mane
+(
+)
+{
+prints("Hello, world!\n");
+printi("Hello, world!\n");
+}

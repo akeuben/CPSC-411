@@ -1,0 +1,24 @@
+// unary minuses (minii?)
+//
+// note parser-level context is required to decide if a number literal from the
+//	scanner is too large, because of two's complement: in a signed 32-bit
+//	representation, for example, the max number literal would be 2147483647
+//	if it were positive (no unary minus before it), but would be 2147483648
+//	if a unary minus applied to it
+
+main() {
+	x = a-(-1);
+	x = a--(1);
+	x = a--(((((((1)))))));		// Lisp mode
+	x = a--// no comment
+
+
+
+
+
+	1;
+	x = a--1;
+	x = a---1;
+	x = a--b;
+	x = -------x;
+}

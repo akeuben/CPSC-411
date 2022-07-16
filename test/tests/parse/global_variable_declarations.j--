@@ -1,0 +1,5 @@
+// some global variable declarations
+// the lack of a main function is a semantic issue, not a syntactic one
+
+int foo;
+boolean bar;
