@@ -54,7 +54,8 @@ formalparameter         : type identifier
 mainfunctiondeclaration : mainfunctiondeclarator block
                         ;
 
-mainfunctiondeclarator  : identifier '(' ')'
+mainfunctiondeclarator  : identifier '(' formalparameterlist ')'
+                        | identifier '(' ')'
                         ;
 
 block                   : '{' blockstatements '}'

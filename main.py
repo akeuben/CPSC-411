@@ -196,6 +196,21 @@ argumentlist/1:
 
 argumentlist/3:
     $1 +($3)
+
+'int': 
+    int
+
+'boolean':
+    bool 
+
+'true':
+    true 
+
+'false':
+    false
+
+'void':
+    void
 """
 
 def main() -> None:
