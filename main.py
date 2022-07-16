@@ -76,11 +76,17 @@ blockstatement:
 statement/2 with 'return':
     returnStmt
 
+statement/2 with 'break':
+    breakStmt
+
 statement/3 with 'return':
     returnStmt ($2)
 
 statement/5 with 'if':
     ifStmt ($3, $5)
+
+statement/5 with 'while':
+    whileStmt ($3, $5)
 
 statement/7 with 'if':
     ifElseStmt ($3, $5, $7)
