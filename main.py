@@ -85,6 +85,9 @@ statement/5 with 'if':
 statement/7 with 'if':
     ifElseStmt ($3, $5, $7)
 
+statement/1 with ';':
+    nullStmt
+
 statement/1:
     $1
 
