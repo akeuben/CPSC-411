@@ -37,8 +37,11 @@ globaldeclaration/1 with variabledeclaration:
 globaldeclaration/1 with mainfunctiondeclaration:
     $1
 
-mainfunctiondeclarator:
+mainfunctiondeclarator/3:
     mainDecl (void, $1, formals)
+
+mainfunctiondeclarator/4:
+    mainDecl (void, $1, $3)
 
 mainfunctiondeclaration:
     $1 +($2)
