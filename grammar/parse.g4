@@ -82,6 +82,7 @@ statement               : block
                         ;
 
 statementexpression     : assignment
+                        | literal
                         | functioninvocation
                         ;
 
