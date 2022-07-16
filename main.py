@@ -109,6 +109,18 @@ conditionalandexpression/3:
 equalityexpression/3 with '==':
     EQ ($1, $3)
 
+relationalexpression/3 with '>':
+    GT ($1, $3)
+
+relationalexpression/3 with '>=':
+    GE ($1, $3)
+
+relationalexpression/3 with '<':
+    LT ($1, $3)
+
+relationalexpression/3 with '<=':
+    LE ($1, $3)
+
 equalityexpression/3 with '!=':
     NE ($1, $3)
 

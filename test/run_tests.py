@@ -1,9 +1,9 @@
-from common import runCompiler, deserialize
+from common import compile, runCompiler, deserialize
 import os
 import sys
 
 def usage():
-    print(f"Usage: {sys.argv[0]} lex|parse <executable path> <test dir>") 
+    print(f"Usage: {sys.argv[0]} lex|parse <executable path> <test dir|test>") 
     sys.exit(1)
 
 def main():
@@ -14,7 +14,10 @@ def main():
     compiler = sys.argv[2]
     testDir = sys.argv[3]
 
-    results = runCompiler(testDir, compiler)
+    if os.path.isdir(testDir):
+        results = runCompiler(testDir, compiler)
+    else:
+        results = [compile(testDir, compiler)]
 
     successCount = 0
     count = len(results)
