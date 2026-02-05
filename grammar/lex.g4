@@ -65,6 +65,9 @@ STRING_NL:      '\n' {
 STRING_CR:      '\r' {
     logging.logError("CR in string", self.line)    
 };
+STRING_EOF:     EOF {
+    logging.logError("EOF in string", self.line)
+};
 STRING_ESCAPE:  '\\'[bftrn'"\\] -> more;
 STRING_INVALID_ESCAPE:  '\\'~[bftrn;"\\] {
     logging.logError("bad escape in string", self.line)
