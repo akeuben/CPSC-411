@@ -46,6 +46,10 @@ NUMBER:         [0-9]+ ;
 
 START_STRING:   '"' -> more, mode(STRING_MODE);
 
+DEFAULT:        . {
+    logging.logWarning("unknown char", self.line);
+} -> skip;
+
 mode STRING_MODE;
 
 STRING:         '"' -> mode(DEFAULT_MODE);
