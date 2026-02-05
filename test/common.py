@@ -1,13 +1,13 @@
 import os
 import subprocess
 
-def runCompilers(dir, compiler):
+def runCompiler(dir, compiler):
     tests = findTests(dir)
 
     results = []
 
     for test in tests:
-        results.push(runCompiler(path, test, reference))
+        results.push(compile(path, test, reference))
 
     return results;
 
@@ -15,7 +15,7 @@ def findScripts(path):
     files = os.listdir(path)
     return [f for f in files if f.endswith(".j--")]
 
-def runCompiler(file, reference):
+def compile(file, reference):
     cp = subprocess.run([reference, file], capture_output=True)
 
     return {

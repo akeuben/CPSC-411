@@ -1,4 +1,4 @@
-from common import main
+from common import runCompiler
 
 TEST_DIRS = {
     "lex": os.path.join(os.path.dirname(__file__), "tests", "lex")
@@ -9,5 +9,5 @@ REFERENCE_COMPILERS = {
 }
 
 if __name__ == "__main__":
-    results = runCompilers(TEST_DIRS.lex, REFERENCE_COMPILERS.lex)
+    results = runCompiler(TEST_DIRS.lex, REFERENCE_COMPILERS.lex)
     print(results)
