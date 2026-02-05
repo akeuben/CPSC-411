@@ -1,0 +1,2 @@
+// illegal string escape in J--
+"ab\u1234de"

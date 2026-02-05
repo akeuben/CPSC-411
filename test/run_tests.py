@@ -1,5 +1,6 @@
 from common import runCompiler, deserialize
 import os
+import sys
 
 def usage():
     print(f"Usage: {sys.argv[0]} lex <lexer path> <test dir>") 
@@ -21,7 +22,7 @@ def main():
     for result in results:
         successCount += checkResult(result)
 
-    print(f">>Summary: {successCount}/{count} tests passed")
+    print(f">> Summary: {successCount}/{count} tests passed")
 
 def checkResult(result):
     file = result["path"]
@@ -34,22 +35,22 @@ def checkResult(result):
         fail = False
         reasons = []
 
-        if(expected["stdout"] != result["stdout"]:
+        if expected["stdout"] != result["stdout"]:
             fail = True
             reasons.append(f"STDOUT mismatch!\n Expected: {expcected["stdout"]}\nGot: {result["stdout"]}")
-        if(expected["stderr"] != result["stderr"]:
+        if expected["stderr"] != result["stderr"]:
             fail = True
             reasons.append(f"STDERR mismatch!\n Expected: {expcected["stderr"]}\nGot: {result["stderr"]}")
-        if(expected["exit_code"] != result["exit_code"]):
+        if expected["exit_code"] != result["exit_code"]:
             fail = True
             reasons.append(f"EXIT CODE mismatch!\n Expected {expected["exit_code"]}\nGot: {result["exit_code"]}")
 
         if fail:
-            print(f"\n\n>> Test: {os.path.basename(path)} failed!")
+            print(f"\n\n>> Test: {os.path.basename(file)} failed!")
             print(reasons.join("\n\n"))
             return 0
         else:
-            print(f"\n\n Test: {os.path.basename(path)} passed!")
+            print(f"\n\n>> Test: {os.path.basename(file)} passed!")
             return 1
 
 

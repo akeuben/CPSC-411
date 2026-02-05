@@ -1,0 +1,3 @@
+// string containing newline still a no-no even if closing quote present
+"abc
+"

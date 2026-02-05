@@ -1,0 +1,3 @@
+// strictly speaking, LF or CR or CR+LF can end a line
+//
+// this comment shouldn't eat up the identifier afterwardasdf
