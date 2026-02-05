@@ -13,6 +13,7 @@
             packages = [
                 (pkgs.python312.withPackages (ps: [ ]))
                 pkgs.stdenv.cc.cc.lib      # provides libstdc++.so.6
+                pkgs.antlr
             ];
 
             shellHook = let 
@@ -27,6 +28,8 @@
                 source .venv/bin/activate
                 echo "Virtual environment activated. You can now use pip freely."
                 export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath runtimeLibraries}:$LD_LIBRARY_PATH
+                export ANTLR=${pkgs.antlr}/bin/antlr
+                export ANTLR_OPTIONS="-Dlanguage=Python3"
             '';
         };
     };
