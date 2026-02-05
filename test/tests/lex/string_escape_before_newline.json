@@ -1,0 +1,1 @@
+{"stdout": "", "stderr": "error: bad escape in string at or near line 2\n", "path": "/home/csusers/avery.keuben/CPSC-411/test/tests/lex/string_escape_before_newline.j--", "exit_code": 1}
