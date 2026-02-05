@@ -6,7 +6,7 @@ import sys
 }
 
 WHITESPACE:     [ \t\n\r\f] -> skip;
-COMMENT:        '//'.*?[\n\r]+ -> skip;
+COMMENT_START:  '//' -> more, mode(COMMENT_MODE);
 
 TRUE:           'true';
 FALSE:          'false';
@@ -49,6 +49,12 @@ START_STRING:   '"' -> more, mode(STRING_MODE);
 DEFAULT:        . {
     logging.logWarning("unknown char", self.line);
 } -> skip;
+
+mode COMMENT_MODE;
+
+COMMENT_NEWLINE:[\r\n]+ -> skip, mode(DEFAULT_MODE);
+COMMENT_EOF:    EOF -> skip, mode(DEFAULT_MODE);
+COMMENT:        . -> more;
 
 mode STRING_MODE;
 
