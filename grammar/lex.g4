@@ -43,3 +43,15 @@ COMMA:          ',';
 ID:             [a-zA-Z_][a-zA-Z_0-9]*;
 
 NUMBER:         [0-9]+ ;
+
+START_STRING:   '"' -> more, mode(STRING_MODE);
+
+mode STRING_MODE;
+
+STRING:         '"' -> mode(DEFAULT_MODE);
+STRING_ESCAPE:  '\\'[bftrn'"\\] -> more;
+STRING_INVALID_ESCAPE:  '\\'~[bftrn;"\\] {
+    logging.logError("bad escape in string", self.line)
+    sys.exit(2)
+};
+STRING_CHAR:    . -> more;
