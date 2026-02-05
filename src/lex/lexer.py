@@ -8,7 +8,11 @@ class WarningListener(antlr4.error.ErrorListener.ErrorListener):
         logWarning("unknown char", line)
 
 def lexFromPath(path):
-    stream = antlr4.FileStream(path)
+    # Deal with non-ascii characters by replacing with unknown char so the 
+    # lexer can still find the string and report a warning.
+    # From: https://docs.python.org/3/library/codecs.html
+    # and:  https://github.com/antlr/antlr4/blob/8e6fd9147b3c9d36b60e2b6656871a55227efb1b/runtime/Python3/src/antlr4/FileStream.py
+    stream = antlr4.FileStream(path, errors='replace')
     lexFromStream(stream)
 
 def lexFromStream(stream):
