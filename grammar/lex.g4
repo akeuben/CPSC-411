@@ -6,7 +6,7 @@ import sys
 }
 
 WHITESPACE:     [ \t\n\r\f] -> skip;
-COMMENT:        '//'.*?[\n] -> skip;
+COMMENT:        '//'.*?[\n\r]+ -> skip;
 
 TRUE:           'true';
 FALSE:          'false';
