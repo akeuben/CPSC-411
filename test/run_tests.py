@@ -37,17 +37,17 @@ def checkResult(result):
 
         if expected["stdout"] != result["stdout"]:
             fail = True
-            reasons.append(f"STDOUT mismatch!\n Expected: {expcected["stdout"]}\nGot: {result["stdout"]}")
+            reasons.append(f"STDOUT mismatch!\n Expected: {expected["stdout"]}\nGot: {result["stdout"]}")
         if expected["stderr"] != result["stderr"]:
             fail = True
-            reasons.append(f"STDERR mismatch!\n Expected: {expcected["stderr"]}\nGot: {result["stderr"]}")
+            reasons.append(f"STDERR mismatch!\n Expected: {expected["stderr"]}\nGot: {result["stderr"]}")
         if expected["exit_code"] != result["exit_code"]:
             fail = True
             reasons.append(f"EXIT CODE mismatch!\n Expected {expected["exit_code"]}\nGot: {result["exit_code"]}")
 
         if fail:
             print(f"\n\n>> Test: {os.path.basename(file)} failed!")
-            print(reasons.join("\n\n"))
+            print("\n\n".join(reasons))
             return 0
         else:
             print(f"\n\n>> Test: {os.path.basename(file)} passed!")
