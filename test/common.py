@@ -1,13 +1,15 @@
 import os
 import subprocess
+import json
 
 def runCompiler(dir, compiler):
-    tests = findTests(dir)
+    tests = findScripts(dir)
 
     results = []
 
     for test in tests:
-        results.push(compile(path, test, reference))
+        fullPath = os.path.join(dir, test)
+        results.append(compile(fullPath, compiler))
 
     return results;
 
