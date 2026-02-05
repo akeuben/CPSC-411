@@ -59,8 +59,11 @@ COMMENT:        . -> more;
 mode STRING_MODE;
 
 STRING:         '"' -> mode(DEFAULT_MODE);
-STRING_NEWLINE: '\n' {
+STRING_NL:      '\n' {
     logging.logError("NL in string", self.line - 1)
+};
+STRING_CR:      '\r' {
+    logging.logError("CR in string", self.line)    
 };
 STRING_ESCAPE:  '\\'[bftrn'"\\] -> more;
 STRING_INVALID_ESCAPE:  '\\'~[bftrn;"\\] {
