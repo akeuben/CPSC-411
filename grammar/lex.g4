@@ -59,9 +59,11 @@ COMMENT:        . -> more;
 mode STRING_MODE;
 
 STRING:         '"' -> mode(DEFAULT_MODE);
+STRING_NEWLINE: '\n' {
+    logging.logError("NL in string", self.line - 1)
+};
 STRING_ESCAPE:  '\\'[bftrn'"\\] -> more;
 STRING_INVALID_ESCAPE:  '\\'~[bftrn;"\\] {
     logging.logError("bad escape in string", self.line)
-    sys.exit(2)
 };
 STRING_CHAR:    . -> more;
