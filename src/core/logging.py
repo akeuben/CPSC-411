@@ -29,6 +29,6 @@ def logUsage(cmd):
     sys.exit(1)
 
 def logUnknownFile(path):
-    print(f"{path}: No such file or directory")
+    print(f"{path}: No such file or directory", file=sys.stderr)
     sys.exit(1)
 
