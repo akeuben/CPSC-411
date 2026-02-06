@@ -1,13 +1,14 @@
 import sys
+from typing import TextIO
 
-def log(prefix, msg, line = None, file=sys.stdout):
+def log(prefix: str, msg: str, line: int | None = None, file: TextIO = sys.stdout) -> None:
     if line != None:
         msg = f"{msg} at or near line {str(line)}"
     print(f"{prefix}: {msg}", file=file)
 
 warningCount = 0
 
-def logWarning(msg, line = None):
+def logWarning(msg: str, line: int | None = None) -> None:
     global warningCount
     warningCount += 1 
 
@@ -16,9 +17,9 @@ def logWarning(msg, line = None):
     if warningCount > 10:
         logError("too many warnings", line)
 
-def logError(msg, line = None):
+def logError(msg: str, line: int | None = None) -> None:
     log("error", msg, line, file=sys.stderr)
     exit(1)
 
-def logToken(type, line, attr):
+def logToken(type: str, line: int, attr: str) -> None:
     print(f"{type} @ line {line}, attr {attr}")
