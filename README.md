@@ -41,6 +41,7 @@ Grammer files for the lexer are provided in the `grammar` directory.
 Python source files, including logging utilities and lexer management are in the 
 - `src/core`
 - `src/lex`
+
 directories respectively.
 
 The main file is located at the root of the repo to align with project specifications.
