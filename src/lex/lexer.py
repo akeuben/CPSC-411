@@ -24,7 +24,6 @@ class Lexer:
 
         self.scanner = scanner
         self.token: antlr4.Token | None = None 
-        self.hasToken: bool = False
         self.hasNextToken: bool = True
 
     def lex(self) -> antlr4.Token:
