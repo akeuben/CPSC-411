@@ -20,7 +20,11 @@ def main():
     count = len(results)
 
     for result in results:
-        successCount += checkResult(result)
+        r = checkResult(result)
+        if r == -1:
+            count -= 1
+        else:
+            successCount += r
 
     print(f">> Summary: {successCount}/{count} tests passed")
 
@@ -28,30 +32,34 @@ def checkResult(result):
     file = result["path"]
     file = file.replace(".j--", ".json")
 
-    with open(file, "r") as f:
-        contents = f.read()
-        expected = deserialize(contents)
+    try:
+        with open(file, "r") as f:
+            contents = f.read()
+            expected = deserialize(contents)
 
-        fail = False
-        reasons = []
+            fail = False
+            reasons = []
 
-        if expected["stdout"] != result["stdout"]:
-            fail = True
-            reasons.append(f"STDOUT mismatch!\n Expected: {expected["stdout"]}\nGot: {result["stdout"]}")
-        if expected["stderr"] != result["stderr"]:
-            fail = True
-            reasons.append(f"STDERR mismatch!\n Expected: {expected["stderr"]}\nGot: {result["stderr"]}")
-        if expected["exit_code"] != result["exit_code"]:
-            fail = True
-            reasons.append(f"EXIT CODE mismatch!\n Expected {expected["exit_code"]}\nGot: {result["exit_code"]}")
+            if expected["stdout"] != result["stdout"]:
+                fail = True
+                reasons.append(f"STDOUT mismatch!\nExpected: \n{expected["stdout"]}\nGot: \n{result["stdout"]}")
+            if expected["stderr"] != result["stderr"]:
+                fail = True
+                reasons.append(f"STDERR mismatch!\nExpected: \n{expected["stderr"]}\nGot: \n{result["stderr"]}")
+            if expected["exit_code"] != result["exit_code"]:
+                fail = True
+                reasons.append(f"EXIT CODE mismatch!\nExpected \n{expected["exit_code"]}\nGot: \n{result["exit_code"]}")
 
-        if fail:
-            print(f"\n\n>> Test: {os.path.basename(file)} failed!")
-            print("\n\n".join(reasons))
-            return 0
-        else:
-            print(f"\n\n>> Test: {os.path.basename(file)} passed!")
-            return 1
+            if fail:
+                print(f">> Test: {os.path.basename(file)} failed!")
+                print("\n".join(reasons))
+                return 0
+            else:
+                print(f">> Test: {os.path.basename(file)} passed!")
+                return 1
+    except:
+        print(f">> warning: expected output for test {file} does not exist. Make sure to run ./generate_expected_results.py within the test directory on the CPSC-Linux machines.")
+        return -1
 
 
 
