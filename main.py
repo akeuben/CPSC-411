@@ -3,14 +3,17 @@
 import sys
 
 from src.lex.lexer import lexerFromPath
-from src.core.logging import logToken
-
+from src.core.logging import logToken, logUsage, logUnknownFile
 def main() -> None:
     if len(sys.argv) != 2:
-        print(f"Usage: python3 {sys.argv[0]} file.j--", file=sys.stderr)
-        sys.exit(1)
+        logUsage(sys.argv[0])
 
-    lexer = lexerFromPath(sys.argv[1])
+    path = sys.argv[1]
+
+    try:
+        lexer = lexerFromPath(path)
+    except:
+        logUnknownFile(path)
 
     while lexer.hasNext():
         token = lexer.lex()
