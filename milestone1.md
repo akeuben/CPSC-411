@@ -13,40 +13,7 @@
 ## Run Output
 
 ```
-avery.keuben>~aycock/411/TEST/ms1/run
-Running make
-Locating J-- compiler
-Test: too few arguments
-Test: too many arguments
-Test: nonexistent file
-Test: empty file
-Test: comments only
-Test: comment ending in EOF
-Test: legal whitespace
-Test: comment EOL check
-Test: illegal whitespace
-Test: illegal characters
-Test: legit token salad
-Test: non-7-bit characters
-Test: whitespace inside && token pair
-Test: whitespace inside || token pair
-Test: comment inside && token pair
-Test: the carat schtick
-Test: string terminated by EOF
-Test: string containing newline, unclosed
-Test: string containing newline, closed
-Test: multi-line string
-Test: string containing CR
-Test: string escape before EOF
-Test: string escape before newline
-Test: legal strings
-Test: illegal octal string escape
-Test: illegal hex string escape
-Test: illegal Unicode string escape
-Test: illegal string escape character
-~/CPSC-411
-avery.keuben>cat run.output
-Run started on Fri Feb  6 12:35:27 2026
+Run started on Fri Feb  6 14:13:47 2026
 
 Hostname: csx2.uc.ucalgary.ca
 
@@ -108,10 +75,10 @@ Test: nonexistent file |
 % /usr/bin/python3 main.py /i/do/not/exist
 
 STDOUT:
-/i/do/not/exist: No such file or directory
 
 
 STDERR:
+/i/do/not/exist: No such file or directory
 
 
 RETURN CODE: 1
@@ -575,7 +542,7 @@ error: bad escape in string at or near line 2
 
 RETURN CODE: 1
 
-Run ended on Fri Feb  6 12:35:29 2026
+Run ended on Fri Feb  6 14:13:48 2026
 ```
 
 ## Custom Testing Results
