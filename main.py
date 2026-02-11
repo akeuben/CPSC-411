@@ -2,6 +2,7 @@
 
 import sys
 
+from src.parse.parser import parserFromLexer
 from src.lex.lexer import lexerFromPath
 from src.core.logging import logToken, logUsage, logUnknownFile
 
@@ -18,11 +19,10 @@ def main() -> None:
         logUnknownFile(path)
         return
 
-    while lexer.hasNext():
-        token = lexer.lex()
-        name = lexer.tokenName(token) 
-        attr = repr(token.text)
-        logToken(name, token.line, attr)
+    parser = parserFromLexer(lexer)
+
+    print(parser.getTree())
+
 
 if __name__ == '__main__':
     main()

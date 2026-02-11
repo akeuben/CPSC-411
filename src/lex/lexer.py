@@ -55,6 +55,9 @@ class Lexer:
     def tokenName(self, token) -> str:
         return self.scanner.symbolicNames[token.type] if token.type != token.EOF else "<EOF>"
 
+    def stream(self) -> antlr4.CommonTokenStream:
+        return antlr4.CommonTokenStream(self.scanner)
+
 
 def lexerFromPath(path: str, errorCallback = None) -> Lexer:
     # Deal with non-ascii characters by replacing with unknown char so the

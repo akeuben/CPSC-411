@@ -30,6 +30,7 @@
                 export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath runtimeLibraries}:$LD_LIBRARY_PATH
                 export ANTLR=${pkgs.antlr}/bin/antlr
                 export ANTLR_OPTIONS="-Dlanguage=Python3"
+                export CPSC_411_LIB="./lib/antlr4/python3.13/"
             '';
         };
     };
