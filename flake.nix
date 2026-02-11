@@ -1,5 +1,5 @@
 {
-    description = "Python dev shell with venv and pip support (Qiskit-compatible)";
+    description = "Python dev shell with venv and pip support (Qiskit-compatible, FHS)";
 
     inputs = {
         nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -8,32 +8,38 @@
     outputs = { self, nixpkgs }: let
         system = "x86_64-linux";
         pkgs = import nixpkgs { inherit system; };
-    in {
-        devShells.${system}.default = pkgs.mkShell {
-            packages = [
+        fhs = pkgs.buildFHSEnv {
+            name = "fhs-shell";
+
+            targetPkgs = pkgs: [
                 (pkgs.python313.withPackages (ps: [ ]))
-                pkgs.stdenv.cc.cc.lib      # provides libstdc++.so.6
+                pkgs.stdenv.cc.cc.lib
                 pkgs.antlr
                 pkgs.graphviz
             ];
 
-            shellHook = let 
-                runtimeLibraries = [
-                    pkgs.stdenv.cc.cc.lib      # provides libstdc++.so.6
-                ];
-            in ''
+            runScript = "bash";
+
+            profile = ''
                 if [ ! -d .venv ]; then
-                  echo "Creating Python venv in .venv..."
-                  python -m venv .venv
+                    echo "Creating Python venv in .venv..."
+                    python -m venv .venv
                 fi
                 source .venv/bin/activate
                 echo "Virtual environment activated. You can now use pip freely."
-                export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath runtimeLibraries}:$LD_LIBRARY_PATH
+
+                export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath [
+                    pkgs.stdenv.cc.cc.lib
+                ]}:$LD_LIBRARY_PATH
+
                 export ANTLR=${pkgs.antlr}/bin/antlr
                 export ANTLR_OPTIONS="-Dlanguage=Python3"
                 export CPSC_411_LIB="./lib/antlr4/python3.13/"
+                export PS1="avery.keuben>"
             '';
         };
+    in {
+        devShells.${system}.default = fhs.env;
     };
 }
 
