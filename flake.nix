@@ -11,7 +11,7 @@
     in {
         devShells.${system}.default = pkgs.mkShell {
             packages = [
-                (pkgs.python312.withPackages (ps: [ ]))
+                (pkgs.python313.withPackages (ps: [ ]))
                 pkgs.stdenv.cc.cc.lib      # provides libstdc++.so.6
                 pkgs.antlr
             ];
