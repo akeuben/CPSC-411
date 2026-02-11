@@ -5,6 +5,7 @@ import sys
 from src.parse.parser import parserFromLexer
 from src.lex.lexer import lexerFromPath
 from src.core.logging import logToken, logUsage, logUnknownFile
+from src.core.cpsc411 import astview
 
 def main() -> None:
     if len(sys.argv) != 2:
@@ -21,7 +22,9 @@ def main() -> None:
 
     parser = parserFromLexer(lexer)
 
-    print(parser.getTree())
+    tree = parser.getTree()
+
+    astview.ASTView(tree).x11()
 
 
 if __name__ == '__main__':
