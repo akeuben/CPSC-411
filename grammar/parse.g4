@@ -22,9 +22,12 @@ globaldeclarations      : globaldeclaration
                         | globaldeclarations globaldeclaration
                         ;
 
-globaldeclaration       : variabledeclaration
+globaldeclaration       : globvariabledeclaration
                         | functiondeclaration
                         | mainfunctiondeclaration
+                        ;
+
+globvariabledeclaration : type identifier ';'
                         ;
 
 variabledeclaration     : type identifier ';'

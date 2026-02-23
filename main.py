@@ -3,6 +3,7 @@
 import sys
 import os
 
+from src.parse.postprocessing import postProcessTree
 from src.parse.parser import parserFromLexer
 from src.lex.lexer import lexerFromPath
 from src.core.logging import logUsage, logUnknownFile
@@ -31,7 +32,7 @@ globaldeclarations/1:
 globaldeclaration/1 with functiondeclaration:
     $1
 
-globaldeclaration/1 with variabledeclaration:
+globaldeclaration/1 with globvariabledeclaration:
     $1
 
 globaldeclaration/1 with mainfunctiondeclaration:
@@ -63,6 +64,9 @@ functiondeclarator/3:
 
 variabledeclaration: 
     varDecl ($1, $2)
+
+globvariabledeclaration: 
+    globVarDecl ($1, $2)
 
 functionheader/2:
     $2 +($1)
@@ -255,10 +259,10 @@ def main() -> None:
     tree = parser.getTree(shaper)
 
     for child in tree:
-        if child.type == "varDecl":
-            child.type = "globVarDecl";
         if child.type == "funcDecl":
             child[0], child[1], child[2], child[3] = child[2], child[0], child[1], child[3]
+
+    postProcessTree(tree)
 
     isDebug = os.environ.get("DEBUG")
 
