@@ -1,1 +1,1 @@
-{"stdout": "program (lineno=5)\n    mainDecl (lineno=5)\n        void (lineno=5)\n        id (attr='main', lineno=5)\n        formals (lineno=5)\n        block (lineno=6)\n            exprStmt (lineno=6)\n                number (attr='123', lineno=6)\n", "stderr": "", "path": "/home/csusers/avery.keuben/CPSC-411/test/./tests/parse/syntax_error.j--", "exit_code": 0}
+{"stdout": "", "stderr": "error: no viable alternative at input 'intqwertyint' at or near line 5\n", "path": "/home/csusers/avery.keuben/CPSC-411/test/./tests/parse/syntax_error.j--", "exit_code": 1}

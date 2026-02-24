@@ -1,7 +1,5 @@
-// like parse.t04, a slight grammar tweak allows this to pass through into
-//	semantic checking, where a better error message than "syntax error"
-//	can be issued
+// syntax error
 
-main() {
-	123;
-}
+int qwerty
+
+int qaz;

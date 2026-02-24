@@ -256,17 +256,9 @@ def main() -> None:
 
     parser = parserFromLexer(lexer)
 
-    tree = parser.getTree(shaper)
+    tree = parser.getTree(postProcessTree, shaper)
 
-    for child in tree:
-        if child.type == "funcDecl":
-            child[0], child[1], child[2], child[3] = child[2], child[0], child[1], child[3]
-
-    postProcessTree(tree)
-
-    isDebug = os.environ.get("DEBUG")
-
-    if isDebug:
+    if os.environ.get("DEBUG"):
         astview.ASTView(tree).x11()
 
     print(tree)

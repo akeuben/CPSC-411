@@ -8,10 +8,14 @@ class Parser:
     def __init__(self, stream: antlr4.CommonTokenStream):
         self.parser = parse(stream)
 
-    def getTree(self, shape = ""):
+    def getTree(self, postProcesser, shape = ""):
         shaper = astshaper.ASTShaper(shape)
 
-        return shaper.shapetree(self.parser.start())
+        tree = shaper.shapetree(self.parser.start())
+
+        postProcesser(tree)
+
+        return tree
 
 def parserFromLexer(lexer: Lexer) -> Parser:
     return parserFromTokenStream(lexer.stream())
