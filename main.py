@@ -10,7 +10,6 @@ from src.lex.lexer import lexerFromPath
 from src.core.logging import logUsage, logUnknownFile
 from src.core.cpsc411 import astview
 
-
 def main() -> None:
     if len(sys.argv) != 2:
         logUsage(sys.argv[0])

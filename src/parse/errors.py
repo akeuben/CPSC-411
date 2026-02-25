@@ -15,7 +15,6 @@ class ParserErrorListener(antlr4.DiagnosticErrorListener):
         if self.callback != None:
             self.callback(recognizer, offendingSymbol, line, col, msg, e)
 
-# pyright: reportUnusedVariable=false
     def reportAmbiguity(self, recognizer, dfa, startIndex, stopIndex, exact, ambigAlts, configs):
         pass
 
