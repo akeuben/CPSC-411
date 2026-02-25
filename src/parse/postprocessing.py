@@ -22,6 +22,5 @@ def reorderFunctionDeclation(tree):
             child[0], child[1], child[2], child[3] = child[2], child[0], child[1], child[3]
 
 def postProcessTree(tree):
-    collapseUnaryMinus(tree)
     reorderFunctionDeclation(tree)
 

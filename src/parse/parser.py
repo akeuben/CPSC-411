@@ -1,9 +1,9 @@
-from typing import Any, Callable
+from typing import Any, Callable, List
 import antlr4
 from src.core.logging import logError
 from src.generated.parse import parse
 from src.lex.lexer import Lexer
-from src.core.cpsc411 import astshaper
+from src.core.cpsc411 import ast, astshaper
 
 # Type alias to make function signatures more readable
 ErrorCallback = Callable[[Any, Any, int, int, str, antlr4.RecognitionException], None]
@@ -26,6 +26,17 @@ class ErrorListener(antlr4.DiagnosticErrorListener):
     def reportContextSensitivity(self, recognizer, dfa, startIndex, stopIndex, prediction, configs):
         pass
 
+class Shaper(astshaper.ASTShaper):
+    def __init__(self, shape: str):
+        super().__init__(shape)
+
+    def nonterminal(self, type: str, lineno: int, children: List): 
+        if type == "UMINUS" and children[0].type == "number" and not children[0].attr.startswith("-"):
+            children[0].attr = f"-{children[0].attr}"
+            return children[0]
+
+        return super().nonterminal(type, lineno, children)
+
 class Parser:
     
     def __init__(self, stream: antlr4.CommonTokenStream, errorCallback: ErrorCallback | None = None):
@@ -34,7 +45,7 @@ class Parser:
         self.parser.addErrorListener(ErrorListener(errorCallback))
 
     def getTree(self, postProcesser, shape = ""):
-        shaper = astshaper.ASTShaper(shape)
+        shaper = Shaper(shape)
 
         tree = shaper.shapetree(self.parser.start())
 
