@@ -50,12 +50,13 @@ class Pass1(AstTraversal):
         idNode = node[1]
         formalsNode = node[2]
 
+        if len(formalsNode) != 0:
+            logError("main declaration can't have parameters", node.lineno);
+
         retSig = retTypeNode.sig 
-        # map the formals to their corresponding types
-        formalsSig = [child.sig for child in formalsNode]
 
         name = idNode.attr
-        sig = TypeFunction(retSig, formalsSig, True)
+        sig = TypeFunction(retSig, [], True)
 
         # Add entry to the symbol table
         if self.table.alreadyDefined(name):
