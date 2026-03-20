@@ -180,6 +180,9 @@ multiplicativeexpression/3 with '%':
 unaryexpression/2 with '-':
     UMINUS ($2)
 
+unaryexpression/2 with '!':
+    NOT ($2)
+
 relationalexpression/1:
     $1
 equalityexpression/1:

@@ -34,16 +34,8 @@ class Pass1(AstTraversal):
         # Add entry to the symbol table
         if self.table.alreadyDefined(name):
             logError(f'{repr(name)} redefined', node.lineno)
-        entry = self.table.declare(name, sig)
+        self.table.declare(name, sig)
 
-        for formal in formalsNode:
-            formalIdNode = formal[1]
-            formalSig = formal.sig
-            self.table.declare(formalIdNode.attr, formalSig)
-            print(f"declared {formalIdNode} in table as {formalSig}")
-
-        idNode.sym = entry.name
-        idNode.sig = sig
 
     def n_mainDecl(self, node: Ast):
         # Check if this is a second main function
@@ -67,10 +59,7 @@ class Pass1(AstTraversal):
         # Add entry to the symbol table
         if self.table.alreadyDefined(name):
             logError(f'{repr(name)} redefined', node.lineno)
-        entry = self.table.declare(name, sig)
-
-        idNode.sym = entry.name
-        idNode.sig = sig
+        self.table.declare(name, sig)
 
     def n_globVarDecl(self, node: Ast):
         typeNode = node[0]
@@ -82,14 +71,10 @@ class Pass1(AstTraversal):
         # Add entry to the symbol table
         if self.table.alreadyDefined(name):
             logError(f'{repr(name)} redefined', node.lineno)
-        entry = self.table.declare(node[1].attr, sig)
-
-        node[1].sym = entry.name 
-        node[1].sig = sig
+        self.table.declare(node[1].attr, sig)
 
     def n_formal(self, node: Ast):
         node.sig = node[0].sig 
-        node[1].sig = node[0].sig
 
     def n_void(self, node: Ast):
         node.sig = TypeVoid()

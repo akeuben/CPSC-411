@@ -31,10 +31,9 @@ def main() -> None:
 
     tree = parser.getTree(shape, Shaper)
 
-    table = check_semantics(tree)
+    check_semantics(tree)
 
     PrettyView(tree).txt()
-    print(table)
 
     # Set the environment variable DEBUG to anything 
     # to display the parse tree in an X11 window

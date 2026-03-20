@@ -29,10 +29,16 @@ class Pass2(AstTraversal):
 
     def n_funcDecl(self, node: Ast):
         idNode = node[1]
+        formalsNode = node[2]
 
         name = idNode.attr
         
         self.table.useScope(name)
+
+        for formal in formalsNode:
+            formalIdNode = formal[1]
+            formalSig = formal.sig
+            self.table.declare(formalIdNode.attr, formalSig)
 
     def n_funcDecl_exit(self, _: Ast):
         self.table.returnScope()

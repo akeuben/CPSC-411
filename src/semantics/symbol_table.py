@@ -50,12 +50,12 @@ class SymbolTable:
 
         self.useScope("__library__")
 
-        self.declare("getchar", TypeFunction(TypeInt(), []))
-        self.declare("halt", TypeFunction(TypeVoid(), []))
+        self.declare("prints", TypeFunction(TypeVoid(), [TypeString()]))
+        self.declare("printi", TypeFunction(TypeVoid(), [TypeInt()]))
         self.declare("printb", TypeFunction(TypeVoid(), [TypeBoolean()]))
         self.declare("printc", TypeFunction(TypeVoid(), [TypeInt()]))
-        self.declare("printi", TypeFunction(TypeVoid(), [TypeInt()]))
-        self.declare("prints", TypeFunction(TypeVoid(), [TypeString()]))
+        self.declare("getchar", TypeFunction(TypeInt(), []))
+        self.declare("halt", TypeFunction(TypeVoid(), []))
 
         self.useScope("__global__")
 

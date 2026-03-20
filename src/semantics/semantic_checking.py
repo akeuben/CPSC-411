@@ -7,17 +7,17 @@ Pass 4: (pre/post order) Misc Checks
 [x] No main declaration found.
 [x] Multiple main declarations found.
 [x] A local declaration was not in an outermost block.
-[ ] The number/type of arguments in a function call doesn't match the function's declaration.
-[ ] The main function can't be called.
+[x] The number/type of arguments in a function call doesn't match the function's declaration.
+[x] The main function can't be called.
 [ ] Break statements must be inside a while statement.
-[ ] Type mismatch for an operator (||, &&, ==, !=, =, <, >, <=, >=, +, - (unary and binary), *, /, %, !).
+[x] Type mismatch for an operator (||, &&, ==, !=, =, <, >, <=, >=, +, - (unary and binary), *, /, %, !).
 [ ] A void function can't return a value.
 [ ] A non-void function must return a value.
 [ ] A value returned from a function has the wrong type.
 [ ] No return statements at all are present in a non-void function. Note that you're only checking for the existence of an appropriate return statement at the semantic checking stage, not whether it's actually executed.
 [ ] An if- or while-condition must be of Boolean type.
 [x] An identifier is redefined within the same scope.
-[ ] An undeclared identifier is used.
+[x] An undeclared identifier is used.
 [ ] An integer literal is out of range.
 [x] The main declaration can't have parameters (if not handled during parsing).
 [ ] A statementexpression can only be an assignment or function invocation (if not handled during parsing).

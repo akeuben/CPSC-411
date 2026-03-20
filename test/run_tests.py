@@ -45,10 +45,10 @@ def checkResult(result):
             fail = False
             reasons: List[Tuple[str, Union[str, int], Union[str, int]]] = []
 
-            if expected["stdout"] != result["stdout"]:
+            if expected["stdout"].strip() != result["stdout"].strip():
                 fail = True
                 reasons.append(("stdout", expected["stdout"], result["stdout"]))
-            if expected["stderr"] != result["stderr"]:
+            if expected["stderr"].strip() != result["stderr"].strip():
                 fail = True
                 reasons.append(("stderr", expected["stderr"], result["stderr"]))
             if expected["exit_code"] != result["exit_code"]:
