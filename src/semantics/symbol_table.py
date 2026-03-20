@@ -1,10 +1,6 @@
-from enum import Enum
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
-class Type(Enum):
-    INT = 1
-    BOOL = 2
-    STRING = 3
+from src.semantics.types import Type
 
 class SymbolTableEntry:
     name: str 
@@ -32,19 +28,20 @@ class SymbolTableScope:
         return self.map.get(symbol)
 
 class SymbolTable:
-    libraryScope: SymbolTableScope 
-    globalScope: SymbolTableScope 
     scopes: Dict[str, SymbolTableScope]
-
-    currentScope: Optional[SymbolTableScope]
+    stack: List[SymbolTableScope]
 
     def __init__(self):
-        self.libraryScope = SymbolTableScope("__library__");
+        libraryScope = SymbolTableScope("__library__");
 
-        # Insert default library functions
+        # TODO: Insert default library functions
 
-        self.globalScope = SymbolTableScope("__global__");
+        globalScope = SymbolTableScope("__global__");
+
         self.scopes = {}
+        self.stack = []
+        self.stack.append(libraryScope);
+        self.stack.append(globalScope);
 
     def useScope(self, name: str):
         """
@@ -52,33 +49,34 @@ class SymbolTable:
         first check this bound scope, then the global scope,
         then the library scope
         """
-        # J-- does not support nested scopes. If we are entering a new 
-        # scope, we just save the old scope we were in
-        self.returnScope()
-
-        self.currentScope = self.scopes[name]
 
         # If the scope does not already exist, we create a new scope
-        if self.currentScope == None:
-            self.currentScope = SymbolTableScope(name)
+        if name in self.scopes.keys():
+            self.scopes[name] = SymbolTableScope(name)
+
+        scope = self.scopes[name]
+
+        self.stack.append(scope)
+        
 
     def returnScope(self):
         """
         Return out of the current scope. Further lookups will 
         first check the global scope, then the library scope.
         """
-        if self.currentScope != None:
-            self.scopes[self.currentScope.name] = self.currentScope
+        if len(self.stack) <= 2:
+            raise RuntimeError("Tried to pop global scope or library scope off scope stack. This should never occur");
+
+        self.stack.pop()
 
     def declare(self, entry: SymbolTableEntry):
         """
         Adds a given symbol to the currently bound scope, or the global 
         scope if there is no bound scope.
         """
-        if self.currentScope != None:
-            self.currentScope.declare(entry)
-        else:
-            self.globalScope.declare(entry)
+
+        # Append entry to top of stack
+        self.stack[len(self.stack)-1].declare(entry)
 
     def lookup(self, symbol: str) -> Optional[SymbolTableEntry]:
         """
@@ -87,22 +85,12 @@ class SymbolTable:
         2. The global scope 
         3. The library scope
         """
-        entry: Optional[SymbolTableEntry] = None
 
-        # Check currently bound scope
-        if self.currentScope != None:
-            entry = self.currentScope.lookup(symbol)
+        # Iterate from top of stack to bottom (reverse from index order)
+        for scope in reversed(self.stack):
+            result = scope.lookup(symbol)
+            if result != None:
+                return result 
 
-        if entry != None:
-            return entry 
-
-        # Check global scope
-        entry = self.globalScope.lookup(symbol)
-
-        if entry != None:
-            return entry 
-
-        # Check library scope
-        entry = self.libraryScope.lookup(symbol)
-
-        return entry
+        # No symbol found in the symbol table, return None
+        return None
