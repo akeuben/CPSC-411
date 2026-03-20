@@ -10,6 +10,9 @@ class SymbolTableEntry:
         self.name = name 
         self.type = _type
 
+    def __repr__(self) -> str:
+        return f'{self.name}:{self.type}'
+
 class SymbolTableScope:
     name: str
     map: Dict[str, SymbolTableEntry]
@@ -18,11 +21,11 @@ class SymbolTableScope:
         self.name = name
         self.map = {}
 
-    def declare(self, entry: SymbolTableEntry):
+    def declare(self, name: str, entry: SymbolTableEntry):
         """
         Adds a given symbol to this scope
         """
-        self.map[entry.name] = entry
+        self.map[name] = entry
 
     def lookup(self, symbol: str) -> Optional[SymbolTableEntry]:
         """
@@ -31,16 +34,21 @@ class SymbolTableScope:
         """
         return self.map.get(symbol)
 
+    def __repr__(self):
+        return self.map.__repr__()
+
 class SymbolTable:
     scopes: Dict[str, SymbolTableScope]
     stack: List[SymbolTableScope]
 
+    index: int
+
     def __init__(self):
         self.scopes = {}
         self.stack = []
+        self.index = 0
 
-        libraryScope = SymbolTableScope("__library__");
-        self.stack.append(libraryScope);
+        self.useScope("__library__")
 
         self.declare("getchar", TypeFunction(TypeInt(), []))
         self.declare("halt", TypeFunction(TypeVoid(), []))
@@ -49,8 +57,7 @@ class SymbolTable:
         self.declare("printi", TypeFunction(TypeVoid(), [TypeInt()]))
         self.declare("prints", TypeFunction(TypeVoid(), [TypeString()]))
 
-        globalScope = SymbolTableScope("__global__");
-        self.stack.append(globalScope);
+        self.useScope("__global__")
 
     def useScope(self, name: str):
         """
@@ -60,7 +67,7 @@ class SymbolTable:
         """
 
         # If the scope does not already exist, we create a new scope
-        if name in self.scopes.keys():
+        if not name in self.scopes.keys():
             self.scopes[name] = SymbolTableScope(name)
 
         scope = self.scopes[name]
@@ -78,14 +85,19 @@ class SymbolTable:
 
         self.stack.pop()
 
-    def declare(self, name: str, _type: Type):
+    def declare(self, name: str, _type: Type) -> SymbolTableEntry:
         """
         Adds a given symbol to the currently bound scope, or the global 
         scope if there is no bound scope.
         """
 
+        self.index += 1
+        entry = SymbolTableEntry(f'sym{self.index}', _type)
+
         # Append entry to top of stack
-        self.stack[len(self.stack)-1].declare(SymbolTableEntry(name, _type))
+        self.stack[-1].declare(name, entry)
+
+        return entry
 
     def lookup(self, symbol: str) -> Optional[SymbolTableEntry]:
         """
@@ -103,3 +115,13 @@ class SymbolTable:
 
         # No symbol found in the symbol table, return None
         return None
+
+    def alreadyDefined(self, symbol: str) -> bool:
+        """
+        Tests whether the given symbol is already defined 
+        in the current scope (and only the current scope)
+        """
+        return self.stack[-1].lookup(symbol) != None
+    
+    def __repr__(self):
+        return self.scopes.__repr__()

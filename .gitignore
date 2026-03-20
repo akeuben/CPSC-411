@@ -10,3 +10,5 @@ __pycache__/
 # CPSC-411 specific libraries only intended to be used 
 # on my local machine
 lib/
+
+/*.j--

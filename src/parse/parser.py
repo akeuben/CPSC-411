@@ -20,10 +20,10 @@ class Parser:
         self.parser.removeErrorListeners()
         self.parser.addErrorListener(ParserErrorListener(errorCallback))
 
-    def getTree(self, shape = "", shaperClass = cpsc411.astshaper.ASTShaper):
+    def getTree(self, shape = "", shaperClass = cpsc411.AstShaper):
         """
-        Gets the AST from the parser. Optionally shapes the generated tree using the provided `shape` spec 
-        using a subclass `shaperClass` of the cpsc411.astshaper.ASTShaper
+        Gets the Ast from the parser. Optionally shapes the generated tree using the provided `shape` spec 
+        using a subclass `shaperClass` of the cpsc411.astshaper.AstShaper
         """
         shaper = shaperClass(shape)
 

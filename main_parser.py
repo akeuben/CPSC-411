@@ -3,9 +3,6 @@
 import sys
 import os
 
-from src.semantics.view import PrettyView
-from src.semantics.symbol_table import SymbolTable
-from src.semantics.pass1 import Pass1
 from src.parse.shaping import Shaper
 from src.parse.shape import shape
 from src.parse.parser import parserFromLexer
@@ -30,16 +27,12 @@ def main() -> None:
 
     tree = parser.getTree(shape, Shaper)
 
-    table = SymbolTable()
-
-    Pass1(tree, table).postorder()
-
-    PrettyView(tree).txt()
-
     # Set the environment variable DEBUG to anything 
     # to display the parse tree in an X11 window
     if os.environ.get("DEBUG"):
         AstView(tree).x11()
+
+    print(tree)
 
 if __name__ == '__main__':
     main()

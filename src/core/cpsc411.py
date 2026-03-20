@@ -2,10 +2,12 @@
 # an environment variable. This allows me to run on my local machine.
 import sys 
 import os 
-from typing import Any
+from types import ModuleType
+from typing import Any, Type, TypeAlias
 sys.path.append(os.environ.get("CPSC_411_LIB", "/home/profs/aycock/411/lib/antlr4/python3.13"))
 import cpsc411
 
-ast: Any = cpsc411.ast
-astshaper: Any = cpsc411.astshaper
-astview: Any = cpsc411.astview
+Ast: TypeAlias = cpsc411.ast.AST
+AstShaper: TypeAlias = cpsc411.astshaper.ASTShaper
+AstView: TypeAlias = cpsc411.astview.ASTView
+AstTraversal: TypeAlias = cpsc411.asttraversal.ASTTraversal

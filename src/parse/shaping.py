@@ -1,7 +1,7 @@
 from typing import List
-from src.core.cpsc411 import astshaper
+from src.core.cpsc411 import AstShaper 
 
-class Shaper(astshaper.ASTShaper):
+class Shaper(AstShaper):
     def __init__(self, shape: str):
         super().__init__(shape)
 
