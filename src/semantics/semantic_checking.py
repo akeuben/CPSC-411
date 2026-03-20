@@ -7,7 +7,7 @@ Pass 4: (pre/post order) Misc Checks
 
 [x] No main declaration found.
 [x] Multiple main declarations found.
-[ ] A local declaration was not in an outermost block.
+[x] A local declaration was not in an outermost block.
 [ ] The number/type of arguments in a function call doesn't match the function's declaration.
 [ ] The main function can't be called.
 [ ] Break statements must be inside a while statement.

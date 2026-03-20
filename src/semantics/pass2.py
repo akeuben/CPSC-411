@@ -10,10 +10,12 @@ class Pass2(AstTraversal):
     """
 
     table: SymbolTable
+    depth: int # holds how many blocks deep we are
 
     def __init__(self, ast: Ast, table: SymbolTable):
         super().__init__(ast)
         self.table = table
+        self.depth = 1
 
     def n_mainDecl(self, node: Ast):
         idNode = node[1]
@@ -35,7 +37,16 @@ class Pass2(AstTraversal):
     def n_funcDecl_exit(self, _: Ast):
         self.table.returnScope()
 
+    def n_block(self, _: Ast):
+        self.depth += 1
+
+    def n_block_exit(self, _: Ast):
+        self.depth -= 1
+
     def n_varDecl(self, node: Ast):
+        if self.depth != 1:
+            logError("local declaration not in outermost block", node.lineno)
+
         typeNode = node[0]
         idNode = node[1]
 
