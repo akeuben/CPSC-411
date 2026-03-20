@@ -71,6 +71,9 @@ class Pass3(AstTraversal):
     def n_number(self, node: Ast):
         node.sig = TypeInt()
 
+    def n_string(self, node: Ast):
+        node.sig = TypeString()
+
     def n_OR(self, node: Ast):
         node.sig = computeResultingType(node, "||")
     def n_AND(self, node: Ast):

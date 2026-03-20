@@ -9,7 +9,7 @@ Pass 4: (pre/post order) Misc Checks
 [x] A local declaration was not in an outermost block.
 [x] The number/type of arguments in a function call doesn't match the function's declaration.
 [x] The main function can't be called.
-[ ] Break statements must be inside a while statement.
+[x] Break statements must be inside a while statement.
 [x] Type mismatch for an operator (||, &&, ==, !=, =, <, >, <=, >=, +, - (unary and binary), *, /, %, !).
 [ ] A void function can't return a value.
 [ ] A non-void function must return a value.
