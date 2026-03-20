@@ -17,31 +17,36 @@ class Pass2(AstTraversal):
         self.table = table
         self.depth = 0
 
-    def n_mainDecl(self, node: Ast):
-        idNode = node[1]
-
-        name = idNode.attr
-        
-        self.table.useScope(name)
+    def n_formals(self, _: Ast):
+        self.depth += 1
+        self.table.useScope()
+    
+    def n_formals_exit(self, _: Ast):
+        self.depth -= 1
 
     def n_mainDecl_exit(self, _: Ast):
         self.table.returnScope()
 
-    def n_funcDecl(self, node: Ast):
-        idNode = node[1]
-        formalsNode = node[2]
-
-        name = idNode.attr
-        
-        self.table.useScope(name)
-
-        for formal in formalsNode:
-            formalIdNode = formal[1]
-            formalSig = formal.sig
-            self.table.declare(formalIdNode.attr, formalSig)
-
     def n_funcDecl_exit(self, _: Ast):
         self.table.returnScope()
+
+    def n_formal(self, node: Ast):
+        if self.depth != 1:
+            logError("local declaration not in outermost block", node.lineno)
+
+        typeNode = node[0]
+        idNode = node[1]
+
+        name = idNode.attr
+        sig = typeNode.sig 
+        
+        # Add entry to the symbol table
+        if self.table.alreadyDefined(name):
+            logError(f'{repr(name)} redefined', node.lineno)
+
+        self.table.declare(name, sig)
+
+        node.sig = sig
 
     def n_block(self, _: Ast):
         self.depth += 1

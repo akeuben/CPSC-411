@@ -10,15 +10,10 @@ class SymbolTableEntry:
         self.name = name 
         self.type = _type
 
-    def __repr__(self) -> str:
-        return f'{self.name}:{self.type}'
-
 class SymbolTableScope:
-    name: str
     map: Dict[str, SymbolTableEntry]
 
-    def __init__(self, name):
-        self.name = name
+    def __init__(self):
         self.map = {}
 
     def declare(self, name: str, entry: SymbolTableEntry):
@@ -34,21 +29,20 @@ class SymbolTableScope:
         """
         return self.map.get(symbol)
 
-    def __repr__(self):
-        return self.map.__repr__()
-
 class SymbolTable:
-    scopes: Dict[str, SymbolTableScope]
-    stack: List[SymbolTableScope]
 
+    stack: List[SymbolTableScope]
     index: int
+
+    log: List[str]
 
     def __init__(self):
         self.scopes = {}
         self.stack = []
         self.index = 0
+        self.log = []
 
-        self.useScope("__library__")
+        self.useScope()
 
         self.declare("prints", TypeFunction(TypeVoid(), [TypeString()]))
         self.declare("printi", TypeFunction(TypeVoid(), [TypeInt()]))
@@ -57,9 +51,9 @@ class SymbolTable:
         self.declare("getchar", TypeFunction(TypeInt(), []))
         self.declare("halt", TypeFunction(TypeVoid(), []))
 
-        self.useScope("__global__")
+        self.useScope()
 
-    def useScope(self, name: str):
+    def useScope(self):
         """
         Bind a scope by name. Further lookups will 
         first check this bound scope, then the global scope,
@@ -67,13 +61,13 @@ class SymbolTable:
         """
 
         # If the scope does not already exist, we create a new scope
-        if not name in self.scopes.keys():
-            self.scopes[name] = SymbolTableScope(name)
+        scope = SymbolTableScope()
 
-        scope = self.scopes[name]
-
+        self.appendLogEntry("open scope")
         self.stack.append(scope)
         
+    def appendLogEntry(self, entry: str) -> None:
+        self.log.append("\t" * len(self.stack) + entry)
 
     def returnScope(self):
         """
@@ -83,6 +77,7 @@ class SymbolTable:
         if len(self.stack) <= 2:
             raise RuntimeError("Tried to pop global scope or library scope off scope stack. This should never occur");
 
+        self.appendLogEntry("close scope")
         self.stack.pop()
 
     def declare(self, name: str, _type: Type) -> SymbolTableEntry:
@@ -96,6 +91,8 @@ class SymbolTable:
 
         # Append entry to top of stack
         self.stack[-1].declare(name, entry)
+
+        self.appendLogEntry(f'define "{name}" ({entry.name}) sig={repr(entry.type)}')
 
         return entry
 
@@ -122,6 +119,6 @@ class SymbolTable:
         in the current scope (and only the current scope)
         """
         return self.stack[-1].lookup(symbol) != None
-    
-    def __repr__(self):
-        return self.scopes.__repr__()
+
+    def print(self) -> None:
+        print('\n'.join(self.log))

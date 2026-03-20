@@ -35,7 +35,7 @@ def main() -> None:
 
     PrettyView(tree).txt()
 
-    print(table)
+    # table.print()
     
     # Set the environment variable DEBUG to anything 
     # to display the parse tree in an X11 window
