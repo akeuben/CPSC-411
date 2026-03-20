@@ -57,12 +57,10 @@ class Pass3(AstTraversal):
     """
 
     table: SymbolTable
-    breakDepth: int
 
     def __init__(self, ast: Ast, table: SymbolTable):
         super().__init__(ast)
         self.table = table
-        self.breakDepth = 0
 
     def n_true(self, node: Ast):
         node.sig = TypeBoolean()

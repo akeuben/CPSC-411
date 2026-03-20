@@ -15,7 +15,7 @@ Pass 4: (pre/post order) Misc Checks
 [ ] A non-void function must return a value.
 [ ] A value returned from a function has the wrong type.
 [ ] No return statements at all are present in a non-void function. Note that you're only checking for the existence of an appropriate return statement at the semantic checking stage, not whether it's actually executed.
-[ ] An if- or while-condition must be of Boolean type.
+[x] An if- or while-condition must be of Boolean type.
 [x] An identifier is redefined within the same scope.
 [x] An undeclared identifier is used.
 [ ] An integer literal is out of range.
@@ -23,6 +23,7 @@ Pass 4: (pre/post order) Misc Checks
 [ ] A statementexpression can only be an assignment or function invocation (if not handled during parsing).
 """
 
+from src.semantics.pass4 import Pass4
 from src.semantics.pass3 import Pass3
 from src.core.logging import logError
 from src.semantics.pass2 import Pass2
@@ -44,5 +45,8 @@ def check_semantics(tree: Ast) -> SymbolTable:
 
     pass3 = Pass3(tree, table)
     pass3.postorder()
+
+    pass4 = Pass4(tree, table)
+    pass4.preorder()
 
     return table
