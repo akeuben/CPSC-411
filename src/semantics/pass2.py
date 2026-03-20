@@ -15,7 +15,7 @@ class Pass2(AstTraversal):
     def __init__(self, ast: Ast, table: SymbolTable):
         super().__init__(ast)
         self.table = table
-        self.depth = 1
+        self.depth = 0
 
     def n_mainDecl(self, node: Ast):
         idNode = node[1]
@@ -56,9 +56,16 @@ class Pass2(AstTraversal):
         # Add entry to the symbol table
         if self.table.alreadyDefined(name):
             logError(f'{repr(name)} redefined', node.lineno)
-        entry = self.table.declare(node[1].attr, sig)
+        self.table.declare(name, sig)
 
-        node[1].sym = entry.name 
-        node[1].sig = sig
         node.sig = sig
 
+    def n_id(self, node: Ast):
+        name = node.attr
+        entry = self.table.lookup(name)
+
+        if entry == None:
+            logError(f"unknown identifier {repr(name)}", node.lineno)
+
+        node.sym = entry.name 
+        node.sig = entry.type

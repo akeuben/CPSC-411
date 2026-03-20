@@ -23,6 +23,7 @@ Pass 4: (pre/post order) Misc Checks
 [ ] A statementexpression can only be an assignment or function invocation (if not handled during parsing).
 """
 
+from src.semantics.pass3 import Pass3
 from src.core.logging import logError
 from src.semantics.pass2 import Pass2
 from src.semantics.pass1 import Pass1
@@ -40,5 +41,8 @@ def check_semantics(tree: Ast) -> SymbolTable:
     
     pass2 = Pass2(tree, table)
     pass2.preorder()
+
+    pass3 = Pass3(tree, table)
+    pass3.postorder()
 
     return table

@@ -1,5 +1,5 @@
 import sys
-from typing import TextIO
+from typing import NoReturn, TextIO
 
 def log(prefix: str, msg: str, line: int | None = None, file: TextIO = sys.stdout) -> None:
     if line != None:
@@ -17,7 +17,7 @@ def logWarning(msg: str, line: int | None = None) -> None:
     if warningCount > 10:
         logError("too many warnings", line)
 
-def logError(msg: str, line: int | None = None) -> None:
+def logError(msg: str, line: int | None = None) -> NoReturn:
     log("error", msg, line, file=sys.stderr)
     exit(1)
 

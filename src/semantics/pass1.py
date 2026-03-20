@@ -36,6 +36,12 @@ class Pass1(AstTraversal):
             logError(f'{repr(name)} redefined', node.lineno)
         entry = self.table.declare(name, sig)
 
+        for formal in formalsNode:
+            formalIdNode = formal[1]
+            formalSig = formal.sig
+            self.table.declare(formalIdNode.attr, formalSig)
+            print(f"declared {formalIdNode} in table as {formalSig}")
+
         idNode.sym = entry.name
         idNode.sig = sig
 
