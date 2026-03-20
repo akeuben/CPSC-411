@@ -9,7 +9,7 @@ STRING:
 'int': 
     int
 'boolean':
-    bool 
+    boolean
 'true':
     true 
 'false':

@@ -4,7 +4,6 @@ Pass 2: (pre/post order) All definitions
 Pass 3: (post order) Type checking 
 Pass 4: (pre/post order) Misc Checks
 
-
 [x] No main declaration found.
 [x] Multiple main declarations found.
 [x] A local declaration was not in an outermost block.

@@ -1,6 +1,8 @@
+from typing import List, Tuple
 from common import compile, runCompiler, deserialize
 import os
 import sys
+import difflib
 
 def usage():
     print(f"Usage: {sys.argv[0]} lex|parse <executable path> <test dir|test>") 
@@ -41,21 +43,29 @@ def checkResult(result):
             expected = deserialize(contents)
 
             fail = False
-            reasons = []
+            reasons: List[Tuple[str, str, str]] = []
 
             if expected["stdout"] != result["stdout"]:
                 fail = True
-                reasons.append(f"STDOUT mismatch!\nExpected: \n{expected["stdout"]}\nGot: \n{result["stdout"]}")
+                reasons.append(("stdout", expected["stdout"], result["stdout"]))
             if expected["stderr"] != result["stderr"]:
                 fail = True
-                reasons.append(f"STDERR mismatch!\nExpected: \n{expected["stderr"]}\nGot: \n{result["stderr"]}")
+                reasons.append(("stderr", expected["stderr"], result["stderr"]))
             if expected["exit_code"] != result["exit_code"]:
                 fail = True
-                reasons.append(f"EXIT CODE mismatch!\nExpected \n{expected["exit_code"]}\nGot: \n{result["exit_code"]}")
+                reasons.append(("exit_code", expected["exit_code"], result["exit_code"]))
 
             if fail:
                 print(f">> Test: {os.path.basename(file)} failed!")
-                print("\n".join(reasons))
+                for reason in reasons:
+                    print(f"{reason[0]} mismatch!")
+                    diff = difflib.unified_diff(
+                        reason[1].splitlines(keepends=True),
+                        reason[2].splitlines(keepends=True),
+                        fromfile="expected",
+                        tofile="actual"
+                    )
+                    print(''.join(diff))
                 return 0
             else:
                 print(f">> Test: {os.path.basename(file)} passed!")
