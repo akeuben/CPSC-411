@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Union
 from common import compile, runCompiler, deserialize
 import os
 import sys
@@ -43,7 +43,7 @@ def checkResult(result):
             expected = deserialize(contents)
 
             fail = False
-            reasons: List[Tuple[str, str, str]] = []
+            reasons: List[Tuple[str, Union[str, int], Union[str, int]]] = []
 
             if expected["stdout"] != result["stdout"]:
                 fail = True
@@ -59,13 +59,16 @@ def checkResult(result):
                 print(f">> Test: {os.path.basename(file)} failed!")
                 for reason in reasons:
                     print(f"{reason[0]} mismatch!")
-                    diff = difflib.unified_diff(
-                        reason[1].splitlines(keepends=True),
-                        reason[2].splitlines(keepends=True),
-                        fromfile="expected",
-                        tofile="actual"
-                    )
-                    print(''.join(diff))
+                    if type(reason[1]) != str or type(reason[2]) != str:
+                        print(f'expected: {reason[1]}, got: {reason[2]}')
+                    else:
+                        diff = difflib.unified_diff(
+                            reason[1].splitlines(keepends=True),
+                            reason[2].splitlines(keepends=True),
+                            fromfile="expected",
+                            tofile="actual"
+                        )
+                        print(''.join(diff))
                 return 0
             else:
                 print(f">> Test: {os.path.basename(file)} passed!")
