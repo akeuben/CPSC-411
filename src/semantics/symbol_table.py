@@ -1,10 +1,14 @@
 from typing import Dict, List, Optional
 
-from src.semantics.types import Type
+from src.semantics.types import Type, TypeBoolean, TypeFunction, TypeInt, TypeString, TypeVoid
 
 class SymbolTableEntry:
     name: str 
     type: Type
+
+    def __init__(self, name: str, _type: Type):
+        self.name = name 
+        self.type = _type
 
 class SymbolTableScope:
     name: str
@@ -32,15 +36,20 @@ class SymbolTable:
     stack: List[SymbolTableScope]
 
     def __init__(self):
-        libraryScope = SymbolTableScope("__library__");
-
-        # TODO: Insert default library functions
-
-        globalScope = SymbolTableScope("__global__");
-
         self.scopes = {}
         self.stack = []
+
+        libraryScope = SymbolTableScope("__library__");
         self.stack.append(libraryScope);
+
+        self.declare("getchar", TypeFunction(TypeInt(), []))
+        self.declare("halt", TypeFunction(TypeVoid(), []))
+        self.declare("printb", TypeFunction(TypeVoid(), [TypeBoolean()]))
+        self.declare("printc", TypeFunction(TypeVoid(), [TypeInt()]))
+        self.declare("printi", TypeFunction(TypeVoid(), [TypeInt()]))
+        self.declare("prints", TypeFunction(TypeVoid(), [TypeString()]))
+
+        globalScope = SymbolTableScope("__global__");
         self.stack.append(globalScope);
 
     def useScope(self, name: str):
@@ -69,14 +78,14 @@ class SymbolTable:
 
         self.stack.pop()
 
-    def declare(self, entry: SymbolTableEntry):
+    def declare(self, name: str, _type: Type):
         """
         Adds a given symbol to the currently bound scope, or the global 
         scope if there is no bound scope.
         """
 
         # Append entry to top of stack
-        self.stack[len(self.stack)-1].declare(entry)
+        self.stack[len(self.stack)-1].declare(SymbolTableEntry(name, _type))
 
     def lookup(self, symbol: str) -> Optional[SymbolTableEntry]:
         """

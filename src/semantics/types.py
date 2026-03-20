@@ -15,6 +15,11 @@ class TypeString(Type):
     def __eq__(self, value: object, /) -> bool:
         return isinstance(value, TypeString)
 
+class TypeVoid(Type):
+    def __eq__(self, value: object, /) -> bool:
+        return isinstance(value, TypeVoid)
+
+
 class TypeFunction(Type):
     formalParameterTypes: List[Type]
     returnType: Type
