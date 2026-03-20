@@ -3,6 +3,7 @@
 import sys
 import os
 
+from src.semantics.semantic_checking import check_semantics
 from src.semantics.view import PrettyView
 from src.semantics.symbol_table import SymbolTable
 from src.semantics.pass1 import Pass1
@@ -30,11 +31,10 @@ def main() -> None:
 
     tree = parser.getTree(shape, Shaper)
 
-    table = SymbolTable()
-
-    Pass1(tree, table).postorder()
+    table = check_semantics(tree)
 
     PrettyView(tree).txt()
+    print(table)
 
     # Set the environment variable DEBUG to anything 
     # to display the parse tree in an X11 window

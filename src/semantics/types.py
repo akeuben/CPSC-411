@@ -43,10 +43,12 @@ class TypeVoid(Type):
 class TypeFunction(Type):
     formalParameterTypes: List[Type]
     returnType: Type
+    main: bool
 
-    def __init__(self, returnType: Type, formalParameterTypes: List[Type]):
+    def __init__(self, returnType: Type, formalParameterTypes: List[Type], main: bool = False):
         self.returnType = returnType
         self.formalParameterTypes = formalParameterTypes
+        self.main = main
 
     def __eq__(self, value: object, /) -> bool:
         if not isinstance(value, TypeFunction):

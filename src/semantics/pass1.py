@@ -55,7 +55,7 @@ class Pass1(AstTraversal):
         formalsSig = [child.sig for child in formalsNode]
 
         name = idNode.attr
-        sig = TypeFunction(retSig, formalsSig)
+        sig = TypeFunction(retSig, formalsSig, True)
 
         # Add entry to the symbol table
         if self.table.alreadyDefined(name):
