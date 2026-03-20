@@ -1,0 +1,15 @@
+// return type mismatch
+
+int foo;
+boolean bar;
+
+void f1()
+{}
+
+int f2(int i)
+{
+	return;
+}
+
+main()
+{}

@@ -1,0 +1,1 @@
+{"stdout": "", "stderr": "error: 'foo' redefined at or near line 5\n", "path": "/home/csusers/avery.keuben/CPSC-411/test/tests/semantic/duplicate_global_names.j--", "exit_code": 1}

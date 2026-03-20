@@ -1,0 +1,7 @@
+// literal range check (32-bit and then some)
+
+int i;
+
+main() {
+	i = 999999999999999999999999999999999999999999999999;
+}

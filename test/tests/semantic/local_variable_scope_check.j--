@@ -1,0 +1,10 @@
+// local variable scope check
+
+int i;
+
+main()
+{
+	printi(i);
+	boolean i;
+	printb(i);
+}

@@ -1,0 +1,4 @@
+// only one main function allowed
+
+main1() {}
+main2() {}

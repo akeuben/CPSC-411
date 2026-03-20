@@ -1,0 +1,11 @@
+// local variable declarations can be mixed with statements
+
+int foo;
+
+main() {
+	int foo;
+	if (true) {
+	}
+	int bar;
+	prints("Hello, world!\n");
+}

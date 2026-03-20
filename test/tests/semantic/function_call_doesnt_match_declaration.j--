@@ -1,0 +1,8 @@
+// missing actual parameter in call
+
+void foo(int a, int b, int c) {
+}
+
+main() {
+	foo(123, 456);
+}

@@ -1,0 +1,1 @@
+{"stdout": "program (lineno=3)\n    mainDecl (lineno=3)\n        void (lineno=3, sig='void')\n        id (attr='main', lineno=3, sym=sym7, sig='f()')\n        formals (lineno=3)\n        block (lineno=4)\n            returnStmt (lineno=4)\n\n", "stderr": "", "path": "/home/csusers/avery.keuben/CPSC-411/test/tests/semantic/the_main_return.j--", "exit_code": 0}

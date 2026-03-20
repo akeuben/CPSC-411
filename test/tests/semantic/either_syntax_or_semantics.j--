@@ -1,0 +1,5 @@
+// catch error passed through grammar to give better error message
+
+main() {
+	123;
+}

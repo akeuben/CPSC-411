@@ -1,0 +1,7 @@
+// return type/argument mismatch
+
+int foo(boolean b) {
+	return foo(foo(b));
+}
+
+main() {}

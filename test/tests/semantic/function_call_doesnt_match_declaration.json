@@ -1,0 +1,1 @@
+{"stdout": "", "stderr": "error: number/type of arguments doesn't match function declaration at or near line 7\n", "path": "/home/csusers/avery.keuben/CPSC-411/test/tests/semantic/function_call_doesnt_match_declaration.j--", "exit_code": 1}

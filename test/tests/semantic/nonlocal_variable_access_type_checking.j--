@@ -1,0 +1,13 @@
+// nonlocal variable access type checking
+
+int foo;
+
+int bar;
+
+boolean baz(int baz, boolean foo) {
+	bar = baz;
+	foo = true;
+	return false;
+}
+
+main() {}

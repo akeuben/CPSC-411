@@ -1,0 +1,10 @@
+// deep type propagation in AST
+
+main() {
+	int x;
+	boolean b;
+
+	b = 2 + 3 * 5 - 123 >= -(-(-x));
+
+	b = !!!(true && false || b == true) != (5 <= 6);
+}

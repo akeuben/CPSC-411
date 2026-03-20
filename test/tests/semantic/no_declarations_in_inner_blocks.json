@@ -1,0 +1,1 @@
+{"stdout": "", "stderr": "error: local declaration not in outermost block at or near line 8\n", "path": "/home/csusers/avery.keuben/CPSC-411/test/tests/semantic/no_declarations_in_inner_blocks.j--", "exit_code": 1}

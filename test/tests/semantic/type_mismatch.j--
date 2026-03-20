@@ -1,0 +1,11 @@
+// type mismatch
+
+main() {
+	int a;
+	boolean b;
+
+	a = 123;
+	b = true;
+
+	a = a + b;
+}

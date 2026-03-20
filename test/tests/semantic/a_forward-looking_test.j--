@@ -1,0 +1,18 @@
+// forward references to global names are okay
+
+qwerty()
+{
+	printi(asdf);
+	qaz(asdf);
+}
+
+int asdf;
+
+void qaz(int i)
+{
+	printc(asdf);
+	qaz(42);
+	uiop = false;
+}
+
+boolean uiop;

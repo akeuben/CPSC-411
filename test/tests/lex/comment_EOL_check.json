@@ -1,1 +1,1 @@
-{"stdout": "ID @ line 3, attr 'asdf'\n<EOF> @ line 4, attr '<EOF>'\n", "stderr": "", "path": "/home/csusers/avery.keuben/CPSC-411/test/./tests/lex/comment_EOL_check.j--", "exit_code": 0}
+{"stdout": "ID @ line 3, attr 'asdf'\n<EOF> @ line 4, attr '<EOF>'\n", "stderr": "", "path": "/home/csusers/avery.keuben/CPSC-411/test/tests/lex/comment_EOL_check.j--", "exit_code": 0}

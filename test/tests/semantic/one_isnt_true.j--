@@ -1,0 +1,6 @@
+// this would be okay in C/C++, but not in Java or J--
+
+main() {
+	while (1)
+		;
+}

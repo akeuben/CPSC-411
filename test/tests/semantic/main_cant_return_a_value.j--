@@ -1,0 +1,5 @@
+// return type mismatch for main function
+
+main() {
+	return 123;
+}

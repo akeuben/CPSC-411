@@ -1,0 +1,9 @@
+// break check - loops can be nested
+
+main() {
+	while (true) {
+		while (true)
+			break;
+		break;
+	}
+}

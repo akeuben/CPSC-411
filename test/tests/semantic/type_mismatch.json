@@ -1,0 +1,1 @@
+{"stdout": "", "stderr": "error: type mismatch for '+' at or near line 10\n", "path": "/home/csusers/avery.keuben/CPSC-411/test/tests/semantic/type_mismatch.j--", "exit_code": 1}

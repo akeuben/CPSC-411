@@ -1,0 +1,7 @@
+// break outside of loop
+
+main() {
+	while (true)
+		break;
+	break;
+}

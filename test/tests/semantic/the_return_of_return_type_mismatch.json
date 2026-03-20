@@ -1,0 +1,1 @@
+{"stdout": "", "stderr": "error: returned value has the wrong type at or near line 11\n", "path": "/home/csusers/avery.keuben/CPSC-411/test/tests/semantic/the_return_of_return_type_mismatch.j--", "exit_code": 1}

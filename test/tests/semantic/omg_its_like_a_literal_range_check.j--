@@ -1,0 +1,8 @@
+// literal range check (32-bit)
+
+int i;
+
+main() {
+	i = 2147483647;
+	i = 2147483648;
+}

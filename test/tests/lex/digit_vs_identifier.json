@@ -1,1 +1,1 @@
-{"stdout": "NUMBER @ line 1, attr '1'\nID @ line 2, attr 'id'\nNUMBER @ line 3, attr '1'\nID @ line 3, attr 'id'\n<EOF> @ line 4, attr '<EOF>'\n", "stderr": "", "path": "/home/csusers/avery.keuben/CPSC-411/test/./tests/lex/digit_vs_identifier.j--", "exit_code": 0}
+{"stdout": "NUMBER @ line 1, attr '1'\nID @ line 2, attr 'id'\nNUMBER @ line 3, attr '1'\nID @ line 3, attr 'id'\n<EOF> @ line 4, attr '<EOF>'\n", "stderr": "", "path": "/home/csusers/avery.keuben/CPSC-411/test/tests/lex/digit_vs_identifier.j--", "exit_code": 0}

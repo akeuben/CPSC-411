@@ -1,0 +1,10 @@
+// check function parameter scope
+
+int foo(int foo) {
+	foo = 5;
+	return foo;
+}
+
+main() {
+	foo(2);
+}

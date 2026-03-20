@@ -1,0 +1,5 @@
+// can't call the main function explicitly
+
+main() {
+	main();
+}

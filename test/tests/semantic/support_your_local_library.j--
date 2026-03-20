@@ -1,0 +1,10 @@
+// ensure run-time library routines are defined
+
+main() {
+	prints("Hello, world!\n");
+	printb(true);
+	printi(123);
+	printc(123);
+	getchar();
+	halt();
+}

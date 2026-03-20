@@ -1,0 +1,7 @@
+// range check (32-bit): ensure leading 0 not being treated as octal
+
+main()
+{
+	int i;
+	i = 017777777777;
+}

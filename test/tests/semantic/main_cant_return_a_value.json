@@ -1,0 +1,1 @@
+{"stdout": "", "stderr": "error: this function can't return a value at or near line 4\n", "path": "/home/csusers/avery.keuben/CPSC-411/test/tests/semantic/main_cant_return_a_value.j--", "exit_code": 1}

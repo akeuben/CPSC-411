@@ -1,0 +1,10 @@
+// local variables can't be defined in inner blocks
+
+int foo;
+
+main() {
+	int foo;
+	if (true) {
+		int foo;
+	}
+}

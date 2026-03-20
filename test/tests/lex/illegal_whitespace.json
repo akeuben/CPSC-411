@@ -1,1 +1,1 @@
-{"stdout": "<EOF> @ line 3, attr '<EOF>'\n", "stderr": "warning: unknown char at or near line 2\n", "path": "/home/csusers/avery.keuben/CPSC-411/test/./tests/lex/illegal_whitespace.j--", "exit_code": 0}
+{"stdout": "<EOF> @ line 3, attr '<EOF>'\n", "stderr": "warning: unknown char at or near line 2\n", "path": "/home/csusers/avery.keuben/CPSC-411/test/tests/lex/illegal_whitespace.j--", "exit_code": 0}

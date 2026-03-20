@@ -1,0 +1,5 @@
+// type checking for the most special run-time routine
+
+main() {
+	prints(main);
+}

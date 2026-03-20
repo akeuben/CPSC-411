@@ -1,0 +1,1 @@
+{"stdout": "", "stderr": "error: main declaration can't have parameters at or near line 3\n", "path": "/home/csusers/avery.keuben/CPSC-411/test/tests/semantic/main_function_with_parameter.j--", "exit_code": 1}

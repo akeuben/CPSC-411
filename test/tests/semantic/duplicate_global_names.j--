@@ -1,0 +1,7 @@
+// duplicate global variable name
+
+int foo;
+int bar;
+int foo;
+
+main(){}

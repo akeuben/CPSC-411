@@ -1,0 +1,1 @@
+{"stdout": "", "stderr": "error: unknown identifier 'x' at or near line 4\n", "path": "/home/csusers/avery.keuben/CPSC-411/test/tests/semantic/undefined_variable.j--", "exit_code": 1}
