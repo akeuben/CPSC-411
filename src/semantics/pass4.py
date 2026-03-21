@@ -87,4 +87,10 @@ class Pass4(AstTraversal):
         if num > comparison:
             logError("number out of range", node.lineno)
         
+    def n_exprStmt(self, node: Ast):
+        child = node[0]
+
+        if child.type != "ASSIGN" and child.type != "funcCall":
+            logError("must be assignment or function call", node.lineno)
+
 
