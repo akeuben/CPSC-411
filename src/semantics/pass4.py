@@ -62,3 +62,29 @@ class Pass4(AstTraversal):
 
         self.foundReturn = True;
 
+    def n_number(self, node: Ast):
+        MAX_INT = "2147483647"
+        MIN_INT = "2147483648"
+
+        num: str = node.attr
+
+        comparison = MAX_INT
+
+        if num[0] == "-":
+            comparison = MIN_INT
+            num = num[1:]
+
+        num = num.strip()
+
+        if len(num) < len(comparison):
+            return 
+
+        if len(num) > len(comparison):
+            logError("number out of range", node.lineno)
+
+        # This is a lexigraphical ordering 
+        # since they are the same size.
+        if num > comparison:
+            logError("number out of range", node.lineno)
+        
+
