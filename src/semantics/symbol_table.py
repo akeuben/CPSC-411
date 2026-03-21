@@ -1,5 +1,7 @@
 from typing import Dict, List, Optional
 
+from src.core.cpsc411 import Ast
+from src.core.logging import logError
 from src.semantics.types import Type, TypeBoolean, TypeFunction, TypeInt, TypeString, TypeVoid
 
 class SymbolTableEntry:
@@ -122,3 +124,40 @@ class SymbolTable:
 
     def print(self) -> None:
         print('\n'.join(self.log))
+
+def register_var(table: SymbolTable, node: Ast, local: bool = False):
+    # Destructure children
+    typeNode = node[0]
+    idNode = node[1]
+
+    name = idNode.attr
+    sig = typeNode.sig 
+
+    # Add entry to the symbol table
+    if table.alreadyDefined(name):
+        logError(f'{repr(name)} redefined', node.lineno)
+    table.declare(name, sig)
+
+    # The reference compiler assigns 
+    # the sig attribute iff it is a 
+    # local declaration
+    if local:
+        node.sig = sig
+
+def register_func(table: SymbolTable, node: Ast, main: bool = False):
+    # Destructure children
+    retTypeNode = node[0]
+    idNode = node[1]
+    formalsNode = node[2]
+
+    retSig = retTypeNode.sig 
+    # map the formals to their corresponding types
+    formalsSig = [child.sig for child in formalsNode]
+
+    name = idNode.attr
+    sig = TypeFunction(retSig, formalsSig, main)
+
+    # Add entry to the symbol table
+    if table.alreadyDefined(name):
+        logError(f'{repr(name)} redefined', node.lineno)
+    table.declare(name, sig)

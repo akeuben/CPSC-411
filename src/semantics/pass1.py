@@ -3,7 +3,7 @@ from src.core.cpsc411 import AstTraversal, Ast
 
 from src.semantics.types import TypeBoolean, TypeFunction, TypeInt, TypeVoid
 
-from src.semantics.symbol_table import SymbolTable
+from src.semantics.symbol_table import SymbolTable, register_func, register_var
 
 class Pass1(AstTraversal):
     """
@@ -26,23 +26,7 @@ class Pass1(AstTraversal):
 
     # Collecting types for global declarations
     def n_funcDecl(self, node: Ast):
-        # Destructure children
-        retTypeNode = node[0]
-        idNode = node[1]
-        formalsNode = node[2]
-
-        retSig = retTypeNode.sig 
-        # map the formals to their corresponding types
-        formalsSig = [child.sig for child in formalsNode]
-
-        name = idNode.attr
-        sig = TypeFunction(retSig, formalsSig)
-
-        # Add entry to the symbol table
-        if self.table.alreadyDefined(name):
-            logError(f'{repr(name)} redefined', node.lineno)
-        self.table.declare(name, sig)
-
+        register_func(self.table, node)
 
     def n_mainDecl(self, node: Ast):
         # Check if this is a second main function
@@ -51,39 +35,17 @@ class Pass1(AstTraversal):
 
         self.mainFound = True
 
-        # Destructure children
-        retTypeNode = node[0]
-        idNode = node[1]
         formalsNode = node[2]
-
         if len(formalsNode) != 0:
             logError("main declaration can't have parameters", node.lineno);
 
-        retSig = retTypeNode.sig 
-
-        name = idNode.attr
-        sig = TypeFunction(retSig, [], True)
-
-        # Add entry to the symbol table
-        if self.table.alreadyDefined(name):
-            logError(f'{repr(name)} redefined', node.lineno)
-        self.table.declare(name, sig)
+        register_func(self.table, node, True)
 
     def n_formal(self, node: Ast):
         node.sig = node[0].sig 
 
     def n_globVarDecl(self, node: Ast):
-        # Destructure children
-        typeNode = node[0]
-        idNode = node[1]
-
-        name = idNode.attr
-        sig = typeNode.sig 
-
-        # Add entry to the symbol table
-        if self.table.alreadyDefined(name):
-            logError(f'{repr(name)} redefined', node.lineno)
-        self.table.declare(node[1].attr, sig)
+        register_var(self.table, node)
 
     # Assigning signatures to types
     def n_void(self, node: Ast):

@@ -30,8 +30,11 @@ from src.semantics.pass1 import Pass1
 from src.semantics.symbol_table import SymbolTable
 from src.core.cpsc411 import Ast
 
-
 def check_semantics(tree: Ast) -> SymbolTable:
+    """
+    Check the semantic correctness of a given Ast. 
+    Returns the symbol table.
+    """
     table = SymbolTable()
 
     pass1 = Pass1(tree, table)

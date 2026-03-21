@@ -1,7 +1,6 @@
 from src.core.logging import logError
-from src.semantics.symbol_table import SymbolTable
+from src.semantics.symbol_table import SymbolTable, register_var
 from src.core.cpsc411 import Ast, AstTraversal
-
 
 class Pass2(AstTraversal):
     """
@@ -35,19 +34,7 @@ class Pass2(AstTraversal):
         self.table.returnScope()
 
     def n_formal(self, node: Ast):
-        # Destructure children
-        typeNode = node[0]
-        idNode = node[1]
-
-        name = idNode.attr
-        sig = typeNode.sig 
-
-        # Add entry to the symbol table
-        if self.table.alreadyDefined(name):
-            logError(f'{repr(name)} redefined', node.lineno)
-        self.table.declare(name, sig)
-
-        node.sig = sig
+        register_var(self.table, node, True)
 
     # Entering or leaving a block changes the depth of the current scope. We 
     # must keep track of this to ensure local variables are not declared in 
@@ -62,19 +49,7 @@ class Pass2(AstTraversal):
         if self.depth != 1:
             logError("local declaration not in outermost block", node.lineno)
 
-        # Destructure children
-        typeNode = node[0]
-        idNode = node[1]
-
-        name = idNode.attr
-        sig = typeNode.sig 
-
-        # Add entry to the symbol table
-        if self.table.alreadyDefined(name):
-            logError(f'{repr(name)} redefined', node.lineno)
-        self.table.declare(name, sig)
-
-        node.sig = sig
+        register_var(self.table, node, True)
 
     # At this point, we are free to lookup and resolve id nodes to their declared entries 
     # in the symbol table

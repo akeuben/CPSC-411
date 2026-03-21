@@ -72,9 +72,9 @@
 
 ## Run Output 
 ```
-Run started on Wed Feb 25 00:51:50 2026
+Run started on Fri Mar 20 19:16:15 2026
 
-Hostname: csx2.uc.ucalgary.ca
+Hostname: csx1.uc.ucalgary.ca
 
 -------------------------------------------------------------------------------
 Running make |
@@ -83,7 +83,18 @@ Running make |
 % /usr/bin/make
 
 STDOUT:
-make: Nothing to be done for 'all'.
+cd grammar && ~aycock/411/bin/cpsc411-antlr4 lex.g4 -o ../src/generated
+cpsc411-antlr4: ANTLR4 succeeded
+
+cpsc411-antlr4: start your main Python code as follows...
+import sys
+sys.path.insert(0, '/home/profs/aycock/411/lib/antlr4/python3.13')
+cd grammar && ~aycock/411/bin/cpsc411-antlr4 parse.g4 -o ../src/generated
+cpsc411-antlr4: ANTLR4 succeeded
+
+cpsc411-antlr4: start your main Python code as follows...
+import sys
+sys.path.insert(0, '/home/profs/aycock/411/lib/antlr4/python3.13')
 
 
 STDERR:
@@ -143,89 +154,120 @@ STDERR:
 RETURN CODE: 1
 
 -------------------------------------------------------------------------------
-Test: global variable declarations |
-------------------------------------
+Test: missing main declaration |
+--------------------------------
 
-% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms2/parse.t01
-
-STDOUT:
-program (lineno=4)
-    globVarDecl (lineno=4)
-        int (attr='int', lineno=4)
-        id (attr='foo', lineno=4)
-    globVarDecl (lineno=5)
-        bool (attr='boolean', lineno=5)
-        id (attr='bar', lineno=5)
-
-
-STDERR:
-
-
-RETURN CODE: 0
-
--------------------------------------------------------------------------------
-Test: syntax error |
---------------------
-
-% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms2/parse.t02
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t01
 
 STDOUT:
 
 
 STDERR:
-error: no viable alternative at input 'intqwertyint' at or near line 5
+error: no main declaration found
 
 
 RETURN CODE: 1
 
 -------------------------------------------------------------------------------
-Test: more and more complex global declarations |
--------------------------------------------------
+Test: function call doesn't match declaration |
+-----------------------------------------------
 
-% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms2/parse.t03
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t02
+
+STDOUT:
+
+
+STDERR:
+error: number/type of arguments doesn't match function declaration at or near line 7
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: missing return |
+----------------------
+
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t03
+
+STDOUT:
+
+
+STDERR:
+error: no return statement in non-void function 'foo'
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: main function with parameter |
+------------------------------------
+
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t04
+
+STDOUT:
+
+
+STDERR:
+error: main declaration can't have parameters at or near line 3
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: duplicate global names |
+------------------------------
+
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t05
+
+STDOUT:
+
+
+STDERR:
+error: 'foo' redefined at or near line 5
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: nonlocal variable access type checking |
+----------------------------------------------
+
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t06
 
 STDOUT:
 program (lineno=3)
     globVarDecl (lineno=3)
-        int (attr='int', lineno=3)
-        id (attr='foo', lineno=3)
-    globVarDecl (lineno=4)
-        bool (attr='boolean', lineno=4)
-        id (attr='bar', lineno=4)
-    funcDecl (lineno=6)
-        void (attr='void', lineno=6)
-        id (attr='f1', lineno=6)
-        formals (lineno=6)
-        block (lineno=7)
-            returnStmt (lineno=7)
-    funcDecl (lineno=10)
-        int (attr='int', lineno=10)
-        id (attr='f2', lineno=10)
-        formals (lineno=10)
-            formal (lineno=10)
-                int (attr='int', lineno=10)
-                id (attr='i', lineno=10)
-        block (lineno=12)
-            returnStmt (lineno=12)
-                id (attr='i', lineno=12)
-    mainDecl (lineno=15)
-        void (lineno=15)
-        id (attr='main', lineno=15)
-        formals (lineno=15)
-        block (lineno=16)
-    funcDecl (lineno=18)
-        bool (attr='boolean', lineno=18)
-        id (attr='f3', lineno=18)
-        formals (lineno=18)
-            formal (lineno=18)
-                int (attr='int', lineno=18)
-                id (attr='i', lineno=18)
-            formal (lineno=18)
-                bool (attr='boolean', lineno=18)
-                id (attr='b', lineno=18)
-        block (lineno=20)
-            returnStmt (lineno=20)
-                false (attr='false', lineno=20)
+        int (attr='int', lineno=3, sig='int')
+        id (attr='foo', lineno=3, sym=sym7, sig='int')
+    globVarDecl (lineno=5)
+        int (attr='int', lineno=5, sig='int')
+        id (attr='bar', lineno=5, sym=sym8, sig='int')
+    funcDecl (lineno=7)
+        bool (attr='boolean', lineno=7, sig='bool')
+        id (attr='baz', lineno=7, sym=sym9, sig='f(int,bool)')
+        formals (lineno=7)
+            formal (lineno=7, sig='int')
+                int (attr='int', lineno=7, sig='int')
+                id (attr='baz', lineno=7, sym=sym11, sig='int')
+            formal (lineno=7, sig='bool')
+                bool (attr='boolean', lineno=7, sig='bool')
+                id (attr='foo', lineno=7, sym=sym12, sig='bool')
+        block (lineno=8)
+            exprStmt (lineno=8)
+                ASSIGN (lineno=8, sig='int')
+                    id (attr='bar', lineno=8, sym=sym8, sig='int')
+                    id (attr='baz', lineno=8, sym=sym11, sig='int')
+            exprStmt (lineno=9)
+                ASSIGN (lineno=9, sig='bool')
+                    id (attr='foo', lineno=9, sym=sym12, sig='bool')
+                    true (attr='true', lineno=9, sig='bool')
+            returnStmt (lineno=10)
+                false (attr='false', lineno=10, sig='bool')
+    mainDecl (lineno=13)
+        void (lineno=13, sig='void')
+        id (attr='main', lineno=13, sym=sym10, sig='f()')
+        formals (lineno=13)
+        block (lineno=13)
 
 
 STDERR:
@@ -234,21 +276,50 @@ STDERR:
 RETURN CODE: 0
 
 -------------------------------------------------------------------------------
-Test: the main problem |
-------------------------
+Test: no declarations in inner blocks |
+---------------------------------------
 
-% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms2/parse.t04
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t07
 
 STDOUT:
-program (lineno=9)
-    mainDecl (lineno=9)
-        void (lineno=9)
-        id (attr='startMeUp', lineno=9)
-        formals (lineno=9)
-            formal (lineno=9)
-                int (attr='int', lineno=9)
-                id (attr='error', lineno=9)
-        block (lineno=10)
+
+
+STDERR:
+error: local declaration not in outermost block at or near line 8
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: mixing statements and declarations |
+------------------------------------------
+
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t08
+
+STDOUT:
+program (lineno=3)
+    globVarDecl (lineno=3)
+        int (attr='int', lineno=3, sig='int')
+        id (attr='foo', lineno=3, sym=sym7, sig='int')
+    mainDecl (lineno=5)
+        void (lineno=5, sig='void')
+        id (attr='main', lineno=5, sym=sym8, sig='f()')
+        formals (lineno=5)
+        block (lineno=6)
+            varDecl (lineno=6, sig='int')
+                int (attr='int', lineno=6, sig='int')
+                id (attr='foo', lineno=6, sym=sym9, sig='int')
+            ifStmt (lineno=7)
+                true (attr='true', lineno=7, sig='bool')
+                block (lineno=7)
+            varDecl (lineno=9, sig='int')
+                int (attr='int', lineno=9, sig='int')
+                id (attr='bar', lineno=9, sym=sym10, sig='int')
+            exprStmt (lineno=10)
+                funcCall (lineno=10, sig='void')
+                    id (attr='prints', lineno=10, sym=sym1, sig='f(string)')
+                    actuals (lineno=10)
+                        string (attr='"Hello, world!\\n"', lineno=10, sig='string')
 
 
 STDERR:
@@ -257,24 +328,19 @@ STDERR:
 RETURN CODE: 0
 
 -------------------------------------------------------------------------------
-Test: dangling else |
----------------------
+Test: the main return |
+-----------------------
 
-% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms2/parse.t05
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t09
 
 STDOUT:
 program (lineno=3)
     mainDecl (lineno=3)
-        void (lineno=3)
-        id (attr='main', lineno=3)
+        void (lineno=3, sig='void')
+        id (attr='main', lineno=3, sym=sym7, sig='f()')
         formals (lineno=3)
         block (lineno=4)
-            ifStmt (lineno=4)
-                true (attr='true', lineno=4)
-                ifElseStmt (lineno=5)
-                    true (attr='true', lineno=5)
-                    nullStmt (lineno=6)
-                    nullStmt (lineno=8)
+            returnStmt (lineno=4)
 
 
 STDERR:
@@ -283,214 +349,178 @@ STDERR:
 RETURN CODE: 0
 
 -------------------------------------------------------------------------------
-Test: local declarations et al. |
+Test: main can't return a value |
 ---------------------------------
 
-% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms2/parse.t06
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t10
 
 STDOUT:
-program (lineno=7)
-    mainDecl (lineno=7)
-        void (lineno=7)
-        id (attr='main', lineno=7)
-        formals (lineno=7)
-        block (lineno=8)
-            varDecl (lineno=8)
-                bool (attr='boolean', lineno=8)
-                id (attr='x', lineno=8)
-            whileStmt (lineno=9)
-                id (attr='x', lineno=9)
-                block (lineno=10)
-                    varDecl (lineno=10)
-                        int (attr='int', lineno=10)
-                        id (attr='foo', lineno=10)
-                    breakStmt (lineno=11)
-                    nullStmt (lineno=12)
-                    nullStmt (lineno=13)
-                    nullStmt (lineno=14)
-                    block (lineno=15)
-                    block (lineno=17)
-                        varDecl (lineno=17)
-                            int (attr='int', lineno=17)
-                            id (attr='bar', lineno=17)
-            breakStmt (lineno=19)
 
 
 STDERR:
+error: this function can't return a value at or near line 4
 
 
-RETURN CODE: 0
+RETURN CODE: 1
 
 -------------------------------------------------------------------------------
-Test: precedence |
-------------------
+Test: return type mismatch |
+----------------------------
 
-% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms2/parse.t07
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t11
 
 STDOUT:
-program (lineno=3)
-    mainDecl (lineno=3)
-        void (lineno=3)
-        id (attr='main', lineno=3)
-        formals (lineno=3)
-        block (lineno=5)
-            exprStmt (lineno=5)
-                ASSIGN (lineno=5)
-                    id (attr='x', lineno=5)
-                    ADD (lineno=5)
-                        number (attr='2', lineno=5)
-                        MUL (lineno=5)
-                            number (attr='3', lineno=5)
-                            number (attr='5', lineno=5)
-            exprStmt (lineno=6)
-                ASSIGN (lineno=6)
-                    id (attr='x', lineno=6)
-                    MUL (lineno=6)
-                        ADD (lineno=6)
-                            number (attr='2', lineno=6)
-                            number (attr='3', lineno=6)
-                        number (attr='5', lineno=6)
 
 
 STDERR:
+error: this function must return a value at or near line 11
 
 
-RETURN CODE: 0
+RETURN CODE: 1
 
 -------------------------------------------------------------------------------
-Test: associativity |
+Test: the return of return type mismatch |
+------------------------------------------
+
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t12
+
+STDOUT:
+
+
+STDERR:
+error: returned value has the wrong type at or near line 11
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: brake the compiler |
+--------------------------
+
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t13
+
+STDOUT:
+
+
+STDERR:
+error: break must be inside 'while' at or near line 6
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: nested breaks |
 ---------------------
 
-% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms2/parse.t08
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t14
 
 STDOUT:
 program (lineno=3)
     mainDecl (lineno=3)
-        void (lineno=3)
-        id (attr='main', lineno=3)
+        void (lineno=3, sig='void')
+        id (attr='main', lineno=3, sym=sym7, sig='f()')
+        formals (lineno=3)
+        block (lineno=4)
+            whileStmt (lineno=4)
+                true (attr='true', lineno=4, sig='bool')
+                block (lineno=5)
+                    whileStmt (lineno=5)
+                        true (attr='true', lineno=5, sig='bool')
+                        breakStmt (lineno=6)
+                    breakStmt (lineno=7)
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: you never call me |
+-------------------------
+
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t15
+
+STDOUT:
+
+
+STDERR:
+error: can't call the main function at or near line 4
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: either syntax or semantics |
+----------------------------------
+
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t16
+
+STDOUT:
+
+
+STDERR:
+error: must be assignment or function call at or near line 4
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: one isn't true |
+----------------------
+
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t17
+
+STDOUT:
+
+
+STDERR:
+error: need a boolean expression at or near line 4
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: support your local library |
+----------------------------------
+
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t18
+
+STDOUT:
+program (lineno=3)
+    mainDecl (lineno=3)
+        void (lineno=3, sig='void')
+        id (attr='main', lineno=3, sym=sym7, sig='f()')
         formals (lineno=3)
         block (lineno=4)
             exprStmt (lineno=4)
-                ASSIGN (lineno=4)
-                    id (attr='x', lineno=4)
-                    DIV (lineno=4)
-                        DIV (lineno=4)
-                            DIV (lineno=4)
-                                number (attr='1', lineno=4)
-                                number (attr='2', lineno=4)
-                            number (attr='3', lineno=4)
-                        number (attr='4', lineno=4)
+                funcCall (lineno=4, sig='void')
+                    id (attr='prints', lineno=4, sym=sym1, sig='f(string)')
+                    actuals (lineno=4)
+                        string (attr='"Hello, world!\\n"', lineno=4, sig='string')
             exprStmt (lineno=5)
-                ASSIGN (lineno=5)
-                    id (attr='a', lineno=5)
-                    ASSIGN (lineno=5)
-                        id (attr='b', lineno=5)
-                        id (attr='c', lineno=5)
-
-
-STDERR:
-
-
-RETURN CODE: 0
-
--------------------------------------------------------------------------------
-Test: unary minuses, so many unary minuses |
---------------------------------------------
-
-% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms2/parse.t09
-
-STDOUT:
-program (lineno=9)
-    mainDecl (lineno=9)
-        void (lineno=9)
-        id (attr='main', lineno=9)
-        formals (lineno=9)
-        block (lineno=10)
-            exprStmt (lineno=10)
-                ASSIGN (lineno=10)
-                    id (attr='x', lineno=10)
-                    SUB (lineno=10)
-                        id (attr='a', lineno=10)
-                        number (attr='-1', lineno=10)
-            exprStmt (lineno=11)
-                ASSIGN (lineno=11)
-                    id (attr='x', lineno=11)
-                    SUB (lineno=11)
-                        id (attr='a', lineno=11)
-                        number (attr='-1', lineno=11)
-            exprStmt (lineno=12)
-                ASSIGN (lineno=12)
-                    id (attr='x', lineno=12)
-                    SUB (lineno=12)
-                        id (attr='a', lineno=12)
-                        number (attr='-1', lineno=12)
-            exprStmt (lineno=13)
-                ASSIGN (lineno=13)
-                    id (attr='x', lineno=13)
-                    SUB (lineno=13)
-                        id (attr='a', lineno=13)
-                        number (attr='-1', lineno=19)
-            exprStmt (lineno=20)
-                ASSIGN (lineno=20)
-                    id (attr='x', lineno=20)
-                    SUB (lineno=20)
-                        id (attr='a', lineno=20)
-                        number (attr='-1', lineno=20)
-            exprStmt (lineno=21)
-                ASSIGN (lineno=21)
-                    id (attr='x', lineno=21)
-                    SUB (lineno=21)
-                        id (attr='a', lineno=21)
-                        UMINUS (lineno=21)
-                            number (attr='-1', lineno=21)
-            exprStmt (lineno=22)
-                ASSIGN (lineno=22)
-                    id (attr='x', lineno=22)
-                    SUB (lineno=22)
-                        id (attr='a', lineno=22)
-                        UMINUS (lineno=22)
-                            id (attr='b', lineno=22)
-            exprStmt (lineno=23)
-                ASSIGN (lineno=23)
-                    id (attr='x', lineno=23)
-                    UMINUS (lineno=23)
-                        UMINUS (lineno=23)
-                            UMINUS (lineno=23)
-                                UMINUS (lineno=23)
-                                    UMINUS (lineno=23)
-                                        UMINUS (lineno=23)
-                                            UMINUS (lineno=23)
-                                                id (attr='x', lineno=23)
-
-
-STDERR:
-
-
-RETURN CODE: 0
-
--------------------------------------------------------------------------------
-Test: stringing your parser along |
------------------------------------
-
-% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms2/parse.t10
-
-STDOUT:
-program (lineno=3)
-    mainDecl (lineno=3)
-        void (lineno=3)
-        id (attr='mane', lineno=3)
-        formals (lineno=3)
-        block (lineno=7)
+                funcCall (lineno=5, sig='void')
+                    id (attr='printb', lineno=5, sym=sym3, sig='f(bool)')
+                    actuals (lineno=5)
+                        true (attr='true', lineno=5, sig='bool')
+            exprStmt (lineno=6)
+                funcCall (lineno=6, sig='void')
+                    id (attr='printi', lineno=6, sym=sym2, sig='f(int)')
+                    actuals (lineno=6)
+                        number (attr='123', lineno=6, sig='int')
             exprStmt (lineno=7)
-                funcCall (lineno=7)
-                    id (attr='prints', lineno=7)
+                funcCall (lineno=7, sig='void')
+                    id (attr='printc', lineno=7, sym=sym4, sig='f(int)')
                     actuals (lineno=7)
-                        string (attr='"Hello, world!\\n"', lineno=7)
+                        number (attr='123', lineno=7, sig='int')
             exprStmt (lineno=8)
-                funcCall (lineno=8)
-                    id (attr='printi', lineno=8)
+                funcCall (lineno=8, sig='int')
+                    id (attr='getchar', lineno=8, sym=sym5, sig='f()')
                     actuals (lineno=8)
-                        string (attr='"Hello, world!\\n"', lineno=8)
+            exprStmt (lineno=9)
+                funcCall (lineno=9, sig='void')
+                    id (attr='halt', lineno=9, sym=sym6, sig='f()')
+                    actuals (lineno=9)
 
 
 STDERR:
@@ -499,85 +529,97 @@ STDERR:
 RETURN CODE: 0
 
 -------------------------------------------------------------------------------
-Test: format's last theorem |
+Test: purple main |
+-------------------
+
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t19
+
+STDOUT:
+
+
+STDERR:
+error: number/type of arguments doesn't match function declaration at or near line 4
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: type mismatch |
+---------------------
+
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t20
+
+STDOUT:
+
+
+STDERR:
+error: type mismatch for '+' at or near line 10
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: return type/argument mismatch |
+-------------------------------------
+
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t21
+
+STDOUT:
+
+
+STDERR:
+error: number/type of arguments doesn't match function declaration at or near line 4
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: undefined variable |
+--------------------------
+
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t22
+
+STDOUT:
+
+
+STDERR:
+error: unknown identifier 'x' at or near line 4
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: parameter scope check |
 -----------------------------
 
-% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms2/parse.t11
-
-STDOUT:
-program (lineno=3)
-    mainDecl (lineno=3)
-        void (lineno=3)
-        id (attr='Maine', lineno=3)
-        formals (lineno=3)
-        block (lineno=5)
-            ifStmt (lineno=5)
-                EQ (lineno=6)
-                    ADD (lineno=6)
-                        number (attr='2', lineno=6)
-                        number (attr='3', lineno=7)
-                    number (attr='5', lineno=8)
-                block (lineno=9)
-
-
-STDERR:
-
-
-RETURN CODE: 0
-
--------------------------------------------------------------------------------
-Test: formalities and actualities |
------------------------------------
-
-% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms2/parse.t12
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t23
 
 STDOUT:
 program (lineno=3)
     funcDecl (lineno=3)
-        void (attr='void', lineno=3)
-        id (attr='foo', lineno=3)
+        int (attr='int', lineno=3, sig='int')
+        id (attr='foo', lineno=3, sym=sym7, sig='f(int)')
         formals (lineno=3)
-        block (lineno=3)
-    funcDecl (lineno=5)
-        bool (attr='boolean', lineno=5)
-        id (attr='bar', lineno=5)
-        formals (lineno=5)
-            formal (lineno=5)
-                int (attr='int', lineno=5)
-                id (attr='a1', lineno=5)
-            formal (lineno=5)
-                bool (attr='boolean', lineno=5)
-                id (attr='a2', lineno=5)
-            formal (lineno=5)
-                int (attr='int', lineno=5)
-                id (attr='a3', lineno=5)
-        block (lineno=5)
-    funcDecl (lineno=8)
-        int (attr='int', lineno=8)
-        id (attr='baz', lineno=8)
+            formal (lineno=3, sig='int')
+                int (attr='int', lineno=3, sig='int')
+                id (attr='foo', lineno=3, sym=sym9, sig='int')
+        block (lineno=4)
+            exprStmt (lineno=4)
+                ASSIGN (lineno=4, sig='int')
+                    id (attr='foo', lineno=4, sym=sym9, sig='int')
+                    number (attr='5', lineno=4, sig='int')
+            returnStmt (lineno=5)
+                id (attr='foo', lineno=5, sym=sym9, sig='int')
+    mainDecl (lineno=8)
+        void (lineno=8, sig='void')
+        id (attr='main', lineno=8, sym=sym8, sig='f()')
         formals (lineno=8)
         block (lineno=9)
             exprStmt (lineno=9)
-                funcCall (lineno=9)
-                    id (attr='blarg', lineno=9)
-                    actuals (lineno=10)
-                        ADD (lineno=10)
-                            number (attr='123', lineno=10)
-                            number (attr='456', lineno=10)
-                        funcCall (lineno=11)
-                            id (attr='garble', lineno=11)
-                            actuals (lineno=11)
-                                number (attr='789', lineno=11)
-                                id (attr='a', lineno=11)
-                                MUL (lineno=11)
-                                    id (attr='b', lineno=11)
-                                    id (attr='c', lineno=11)
-                        true (attr='true', lineno=12)
-                        funcCall (lineno=13)
-                            id (attr='greep', lineno=13)
-                            actuals (lineno=13)
-                                false (attr='false', lineno=13)
-                                string (attr='"eek"', lineno=13)
+                funcCall (lineno=9, sig='int')
+                    id (attr='foo', lineno=9, sym=sym7, sig='f(int)')
+                    actuals (lineno=9)
+                        number (attr='2', lineno=9, sig='int')
 
 
 STDERR:
@@ -586,13 +628,71 @@ STDERR:
 RETURN CODE: 0
 
 -------------------------------------------------------------------------------
-Test: the perfect app |
------------------------
+Test: will the real main please stand up |
+------------------------------------------
 
-% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms2/parse.t13
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t24
+
+STDOUT:
+
+
+STDERR:
+error: multiple main declarations found
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: a forward-looking test |
+------------------------------
+
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t25
 
 STDOUT:
 program (lineno=3)
+    mainDecl (lineno=3)
+        void (lineno=3, sig='void')
+        id (attr='qwerty', lineno=3, sym=sym7, sig='f()')
+        formals (lineno=3)
+        block (lineno=5)
+            exprStmt (lineno=5)
+                funcCall (lineno=5, sig='void')
+                    id (attr='printi', lineno=5, sym=sym2, sig='f(int)')
+                    actuals (lineno=5)
+                        id (attr='asdf', lineno=5, sym=sym8, sig='int')
+            exprStmt (lineno=6)
+                funcCall (lineno=6, sig='void')
+                    id (attr='qaz', lineno=6, sym=sym9, sig='f(int)')
+                    actuals (lineno=6)
+                        id (attr='asdf', lineno=6, sym=sym8, sig='int')
+    globVarDecl (lineno=9)
+        int (attr='int', lineno=9, sig='int')
+        id (attr='asdf', lineno=9, sym=sym8, sig='int')
+    funcDecl (lineno=11)
+        void (attr='void', lineno=11, sig='void')
+        id (attr='qaz', lineno=11, sym=sym9, sig='f(int)')
+        formals (lineno=11)
+            formal (lineno=11, sig='int')
+                int (attr='int', lineno=11, sig='int')
+                id (attr='i', lineno=11, sym=sym11, sig='int')
+        block (lineno=13)
+            exprStmt (lineno=13)
+                funcCall (lineno=13, sig='void')
+                    id (attr='printc', lineno=13, sym=sym4, sig='f(int)')
+                    actuals (lineno=13)
+                        id (attr='asdf', lineno=13, sym=sym8, sig='int')
+            exprStmt (lineno=14)
+                funcCall (lineno=14, sig='void')
+                    id (attr='qaz', lineno=14, sym=sym9, sig='f(int)')
+                    actuals (lineno=14)
+                        number (attr='42', lineno=14, sig='int')
+            exprStmt (lineno=15)
+                ASSIGN (lineno=15, sig='bool')
+                    id (attr='uiop', lineno=15, sym=sym10, sig='bool')
+                    false (attr='false', lineno=15, sig='bool')
+    globVarDecl (lineno=18)
+        bool (attr='boolean', lineno=18, sig='bool')
+        id (attr='uiop', lineno=18, sym=sym10, sig='bool')
 
 
 STDERR:
@@ -601,20 +701,44 @@ STDERR:
 RETURN CODE: 0
 
 -------------------------------------------------------------------------------
-Test: syntax error? |
----------------------
+Test: omg it's like a literal range check |
+-------------------------------------------
 
-% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms2/parse.t14
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t26
 
 STDOUT:
-program (lineno=5)
+
+
+STDERR:
+error: number out of range at or near line 7
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: omg but this check passes lol |
+-------------------------------------
+
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t27
+
+STDOUT:
+program (lineno=3)
+    globVarDecl (lineno=3)
+        int (attr='int', lineno=3, sig='int')
+        id (attr='i', lineno=3, sym=sym7, sig='int')
     mainDecl (lineno=5)
-        void (lineno=5)
-        id (attr='main', lineno=5)
+        void (lineno=5, sig='void')
+        id (attr='main', lineno=5, sym=sym8, sig='f()')
         formals (lineno=5)
         block (lineno=6)
             exprStmt (lineno=6)
-                number (attr='123', lineno=6)
+                ASSIGN (lineno=6, sig='int')
+                    id (attr='i', lineno=6, sym=sym7, sig='int')
+                    number (attr='2147483647', lineno=6, sig='int')
+            exprStmt (lineno=7)
+                ASSIGN (lineno=7, sig='int')
+                    id (attr='i', lineno=7, sym=sym7, sig='int')
+                    number (attr='-2147483648', lineno=7, sig='int')
 
 
 STDERR:
@@ -623,707 +747,71 @@ STDERR:
 RETURN CODE: 0
 
 -------------------------------------------------------------------------------
-Test: a calculated move |
--------------------------
+Test: as the Germans say: nine |
+--------------------------------
 
-% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms2/gen.t18
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t28
 
 STDOUT:
-program (lineno=5)
-    mainDecl (lineno=5)
-        void (lineno=5)
-        id (attr='calculator', lineno=5)
-        formals (lineno=5)
-        block (lineno=7)
+
+
+STDERR:
+error: number out of range at or near line 6
+
+
+RETURN CODE: 1
+
+-------------------------------------------------------------------------------
+Test: deep type propagation |
+-----------------------------
+
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t29
+
+STDOUT:
+program (lineno=3)
+    mainDecl (lineno=3)
+        void (lineno=3, sig='void')
+        id (attr='main', lineno=3, sym=sym7, sig='f()')
+        formals (lineno=3)
+        block (lineno=4)
+            varDecl (lineno=4, sig='int')
+                int (attr='int', lineno=4, sig='int')
+                id (attr='x', lineno=4, sym=sym8, sig='int')
+            varDecl (lineno=5, sig='bool')
+                bool (attr='boolean', lineno=5, sig='bool')
+                id (attr='b', lineno=5, sym=sym9, sig='bool')
             exprStmt (lineno=7)
-                funcCall (lineno=7)
-                    id (attr='init', lineno=7)
-                    actuals (lineno=7)
-            exprStmt (lineno=8)
-                funcCall (lineno=8)
-                    id (attr='parser', lineno=8)
-                    actuals (lineno=8)
-    globVarDecl (lineno=15)
-        bool (attr='boolean', lineno=15)
-        id (attr='_havechar', lineno=15)
-    globVarDecl (lineno=16)
-        int (attr='int', lineno=16)
-        id (attr='_char', lineno=16)
-    funcDecl (lineno=18)
-        int (attr='int', lineno=18)
-        id (attr='getc', lineno=18)
-        formals (lineno=18)
-        block (lineno=20)
-            ifStmt (lineno=20)
-                id (attr='_havechar', lineno=20)
-                block (lineno=21)
-                    exprStmt (lineno=21)
-                        ASSIGN (lineno=21)
-                            id (attr='_havechar', lineno=21)
-                            false (attr='false', lineno=21)
-                    returnStmt (lineno=22)
-                        id (attr='_char', lineno=22)
-            returnStmt (lineno=24)
-                funcCall (lineno=24)
-                    id (attr='getchar', lineno=24)
-                    actuals (lineno=24)
-    funcDecl (lineno=27)
-        void (attr='void', lineno=27)
-        id (attr='ungetc', lineno=27)
-        formals (lineno=27)
-            formal (lineno=27)
-                int (attr='int', lineno=27)
-                id (attr='ch', lineno=27)
-        block (lineno=29)
-            ifStmt (lineno=29)
-                id (attr='_havechar', lineno=29)
-                block (lineno=30)
-                    exprStmt (lineno=30)
-                        funcCall (lineno=30)
-                            id (attr='prints', lineno=30)
-                            actuals (lineno=30)
-                                string (attr='"Internal error: too many ungets!\\n"', lineno=30)
-                    exprStmt (lineno=31)
-                        funcCall (lineno=31)
-                            id (attr='halt', lineno=31)
-                            actuals (lineno=31)
-            exprStmt (lineno=33)
-                ASSIGN (lineno=33)
-                    id (attr='_havechar', lineno=33)
-                    true (attr='true', lineno=33)
-            exprStmt (lineno=34)
-                ASSIGN (lineno=34)
-                    id (attr='_char', lineno=34)
-                    id (attr='ch', lineno=34)
-    globVarDecl (lineno=41)
-        bool (attr='boolean', lineno=41)
-        id (attr='_havetoken', lineno=41)
-    globVarDecl (lineno=42)
-        int (attr='int', lineno=42)
-        id (attr='_token', lineno=42)
-    globVarDecl (lineno=43)
-        int (attr='int', lineno=43)
-        id (attr='attr', lineno=43)
-    funcDecl (lineno=45)
-        int (attr='int', lineno=45)
-        id (attr='peek', lineno=45)
-        formals (lineno=45)
-        block (lineno=47)
-            ifStmt (lineno=47)
-                id (attr='_havetoken', lineno=47)
-                returnStmt (lineno=48)
-                    id (attr='_token', lineno=48)
-            exprStmt (lineno=50)
-                ASSIGN (lineno=50)
-                    id (attr='_havetoken', lineno=50)
-                    true (attr='true', lineno=50)
-            returnStmt (lineno=51)
-                ASSIGN (lineno=51)
-                    id (attr='_token', lineno=51)
-                    funcCall (lineno=51)
-                        id (attr='scanner', lineno=51)
-                        actuals (lineno=51)
-    funcDecl (lineno=54)
-        void (attr='void', lineno=54)
-        id (attr='match', lineno=54)
-        formals (lineno=54)
-            formal (lineno=54)
-                int (attr='int', lineno=54)
-                id (attr='expect', lineno=54)
-        block (lineno=56)
-            ifStmt (lineno=56)
-                NE (lineno=56)
-                    funcCall (lineno=56)
-                        id (attr='peek', lineno=56)
-                        actuals (lineno=56)
-                    id (attr='expect', lineno=56)
-                block (lineno=57)
-                    exprStmt (lineno=57)
-                        funcCall (lineno=57)
-                            id (attr='prints', lineno=57)
-                            actuals (lineno=57)
-                                string (attr='"Error: expected "', lineno=57)
-                    exprStmt (lineno=58)
-                        funcCall (lineno=58)
-                            id (attr='printc', lineno=58)
-                            actuals (lineno=58)
-                                id (attr='expect', lineno=58)
-                    exprStmt (lineno=59)
-                        funcCall (lineno=59)
-                            id (attr='prints', lineno=59)
-                            actuals (lineno=59)
-                                string (attr='"\\n"', lineno=59)
-                    exprStmt (lineno=60)
-                        funcCall (lineno=60)
-                            id (attr='halt', lineno=60)
-                            actuals (lineno=60)
-            exprStmt (lineno=62)
-                ASSIGN (lineno=62)
-                    id (attr='_havetoken', lineno=62)
-                    false (attr='false', lineno=62)
-    funcDecl (lineno=65)
-        int (attr='int', lineno=65)
-        id (attr='scanner', lineno=65)
-        formals (lineno=65)
-        block (lineno=67)
-            varDecl (lineno=67)
-                int (attr='int', lineno=67)
-                id (attr='ch', lineno=67)
-            whileStmt (lineno=69)
-                funcCall (lineno=69)
-                    id (attr='isspace', lineno=69)
-                    actuals (lineno=69)
-                        ASSIGN (lineno=69)
-                            id (attr='ch', lineno=69)
-                            funcCall (lineno=69)
-                                id (attr='getc', lineno=69)
-                                actuals (lineno=69)
-                nullStmt (lineno=70)
-            ifStmt (lineno=72)
-                EQ (lineno=72)
-                    id (attr='ch', lineno=72)
-                    id (attr='EOF', lineno=72)
-                returnStmt (lineno=72)
-                    id (attr='TK_EOF', lineno=72)
-            ifStmt (lineno=73)
-                EQ (lineno=73)
-                    id (attr='ch', lineno=73)
-                    id (attr='ASCII_NL', lineno=73)
-                returnStmt (lineno=73)
-                    id (attr='TK_EOLN', lineno=73)
-            ifStmt (lineno=74)
-                EQ (lineno=74)
-                    id (attr='ch', lineno=74)
-                    id (attr='ASCII_PLUS', lineno=74)
-                returnStmt (lineno=74)
-                    id (attr='TK_ADD', lineno=74)
-            ifStmt (lineno=75)
-                EQ (lineno=75)
-                    id (attr='ch', lineno=75)
-                    id (attr='ASCII_MINUS', lineno=75)
-                returnStmt (lineno=75)
-                    id (attr='TK_SUB', lineno=75)
-            ifStmt (lineno=76)
-                EQ (lineno=76)
-                    id (attr='ch', lineno=76)
-                    id (attr='ASCII_STAR', lineno=76)
-                returnStmt (lineno=76)
-                    id (attr='TK_MUL', lineno=76)
-            ifStmt (lineno=77)
-                EQ (lineno=77)
-                    id (attr='ch', lineno=77)
-                    id (attr='ASCII_SLASH', lineno=77)
-                returnStmt (lineno=77)
-                    id (attr='TK_DIV', lineno=77)
-            ifStmt (lineno=78)
-                EQ (lineno=78)
-                    id (attr='ch', lineno=78)
-                    id (attr='ASCII_LPAREN', lineno=78)
-                returnStmt (lineno=78)
-                    id (attr='TK_LPAREN', lineno=78)
-            ifStmt (lineno=79)
-                EQ (lineno=79)
-                    id (attr='ch', lineno=79)
-                    id (attr='ASCII_RPAREN', lineno=79)
-                returnStmt (lineno=79)
-                    id (attr='TK_RPAREN', lineno=79)
-            ifStmt (lineno=81)
-                funcCall (lineno=81)
-                    id (attr='isdigit', lineno=81)
-                    actuals (lineno=81)
-                        id (attr='ch', lineno=81)
-                block (lineno=82)
-                    exprStmt (lineno=82)
-                        ASSIGN (lineno=82)
-                            id (attr='attr', lineno=82)
-                            number (attr='0', lineno=82)
-                    whileStmt (lineno=83)
-                        funcCall (lineno=83)
-                            id (attr='isdigit', lineno=83)
-                            actuals (lineno=83)
-                                id (attr='ch', lineno=83)
-                        block (lineno=84)
-                            exprStmt (lineno=84)
-                                ASSIGN (lineno=84)
-                                    id (attr='attr', lineno=84)
-                                    ADD (lineno=84)
-                                        MUL (lineno=84)
-                                            id (attr='attr', lineno=84)
-                                            number (attr='10', lineno=84)
-                                        SUB (lineno=84)
-                                            id (attr='ch', lineno=84)
-                                            id (attr='ASCII_0', lineno=84)
-                            exprStmt (lineno=85)
-                                ASSIGN (lineno=85)
-                                    id (attr='ch', lineno=85)
-                                    funcCall (lineno=85)
-                                        id (attr='getc', lineno=85)
-                                        actuals (lineno=85)
-                    exprStmt (lineno=87)
-                        funcCall (lineno=87)
-                            id (attr='ungetc', lineno=87)
-                            actuals (lineno=87)
-                                id (attr='ch', lineno=87)
-                    returnStmt (lineno=88)
-                        id (attr='TK_NUMBER', lineno=88)
-            exprStmt (lineno=91)
-                funcCall (lineno=91)
-                    id (attr='prints', lineno=91)
-                    actuals (lineno=91)
-                        string (attr='"Error: invalid character.\\n"', lineno=91)
-            exprStmt (lineno=92)
-                funcCall (lineno=92)
-                    id (attr='halt', lineno=92)
-                    actuals (lineno=92)
-    funcDecl (lineno=95)
-        bool (attr='boolean', lineno=95)
-        id (attr='isdigit', lineno=95)
-        formals (lineno=95)
-            formal (lineno=95)
-                int (attr='int', lineno=95)
-                id (attr='ch', lineno=95)
-        block (lineno=97)
-            returnStmt (lineno=97)
-                AND (lineno=97)
-                    GE (lineno=97)
-                        id (attr='ch', lineno=97)
-                        id (attr='ASCII_0', lineno=97)
-                    LE (lineno=97)
-                        id (attr='ch', lineno=97)
-                        id (attr='ASCII_9', lineno=97)
-    funcDecl (lineno=100)
-        bool (attr='boolean', lineno=100)
-        id (attr='isspace', lineno=100)
-        formals (lineno=100)
-            formal (lineno=100)
-                int (attr='int', lineno=100)
-                id (attr='ch', lineno=100)
-        block (lineno=102)
-            returnStmt (lineno=102)
-                OR (lineno=102)
-                    OR (lineno=102)
-                        EQ (lineno=102)
-                            id (attr='ch', lineno=102)
-                            id (attr='ASCII_SPACE', lineno=102)
-                        EQ (lineno=103)
-                            id (attr='ch', lineno=103)
-                            id (attr='ASCII_TAB', lineno=103)
-                    EQ (lineno=104)
-                        id (attr='ch', lineno=104)
-                        id (attr='ASCII_CR', lineno=104)
-    funcDecl (lineno=111)
-        void (attr='void', lineno=111)
-        id (attr='parser', lineno=111)
-        formals (lineno=111)
-        block (lineno=113)
-            varDecl (lineno=113)
-                int (attr='int', lineno=113)
-                id (attr='result', lineno=113)
-            whileStmt (lineno=115)
-                NE (lineno=115)
-                    funcCall (lineno=115)
-                        id (attr='peek', lineno=115)
-                        actuals (lineno=115)
-                    id (attr='TK_EOF', lineno=115)
-                block (lineno=116)
-                    exprStmt (lineno=116)
-                        ASSIGN (lineno=116)
-                            id (attr='result', lineno=116)
-                            funcCall (lineno=116)
-                                id (attr='E', lineno=116)
-                                actuals (lineno=116)
-                    exprStmt (lineno=117)
-                        funcCall (lineno=117)
-                            id (attr='match', lineno=117)
-                            actuals (lineno=117)
-                                id (attr='TK_EOLN', lineno=117)
-                    exprStmt (lineno=119)
-                        funcCall (lineno=119)
-                            id (attr='prints', lineno=119)
-                            actuals (lineno=119)
-                                string (attr='" = "', lineno=119)
-                    exprStmt (lineno=120)
-                        funcCall (lineno=120)
-                            id (attr='printi', lineno=120)
-                            actuals (lineno=120)
-                                id (attr='result', lineno=120)
-                    exprStmt (lineno=121)
-                        funcCall (lineno=121)
-                            id (attr='prints', lineno=121)
-                            actuals (lineno=121)
-                                string (attr='"\\n"', lineno=121)
-    funcDecl (lineno=125)
-        int (attr='int', lineno=125)
-        id (attr='E', lineno=125)
-        formals (lineno=125)
-        block (lineno=127)
-            varDecl (lineno=127)
-                int (attr='int', lineno=127)
-                id (attr='l', lineno=127)
-            varDecl (lineno=128)
-                int (attr='int', lineno=128)
-                id (attr='r', lineno=128)
-            varDecl (lineno=129)
-                int (attr='int', lineno=129)
-                id (attr='token', lineno=129)
-            exprStmt (lineno=131)
-                ASSIGN (lineno=131)
-                    id (attr='l', lineno=131)
-                    funcCall (lineno=131)
-                        id (attr='T', lineno=131)
-                        actuals (lineno=131)
-            whileStmt (lineno=132)
-                OR (lineno=132)
-                    EQ (lineno=132)
-                        funcCall (lineno=132)
-                            id (attr='peek', lineno=132)
-                            actuals (lineno=132)
-                        id (attr='TK_ADD', lineno=132)
-                    EQ (lineno=132)
-                        funcCall (lineno=132)
-                            id (attr='peek', lineno=132)
-                            actuals (lineno=132)
-                        id (attr='TK_SUB', lineno=132)
-                block (lineno=133)
-                    exprStmt (lineno=133)
-                        funcCall (lineno=133)
-                            id (attr='match', lineno=133)
-                            actuals (lineno=133)
-                                ASSIGN (lineno=133)
-                                    id (attr='token', lineno=133)
-                                    funcCall (lineno=133)
-                                        id (attr='peek', lineno=133)
-                                        actuals (lineno=133)
-                    exprStmt (lineno=134)
-                        ASSIGN (lineno=134)
-                            id (attr='r', lineno=134)
-                            funcCall (lineno=134)
-                                id (attr='T', lineno=134)
-                                actuals (lineno=134)
-                    ifElseStmt (lineno=136)
-                        EQ (lineno=136)
-                            id (attr='token', lineno=136)
-                            id (attr='TK_ADD', lineno=136)
-                        exprStmt (lineno=137)
-                            ASSIGN (lineno=137)
-                                id (attr='l', lineno=137)
-                                ADD (lineno=137)
-                                    id (attr='l', lineno=137)
-                                    id (attr='r', lineno=137)
-                        exprStmt (lineno=139)
-                            ASSIGN (lineno=139)
-                                id (attr='l', lineno=139)
-                                SUB (lineno=139)
-                                    id (attr='l', lineno=139)
-                                    id (attr='r', lineno=139)
-            returnStmt (lineno=141)
-                id (attr='l', lineno=141)
-    funcDecl (lineno=144)
-        int (attr='int', lineno=144)
-        id (attr='T', lineno=144)
-        formals (lineno=144)
-        block (lineno=146)
-            varDecl (lineno=146)
-                int (attr='int', lineno=146)
-                id (attr='l', lineno=146)
-            varDecl (lineno=147)
-                int (attr='int', lineno=147)
-                id (attr='r', lineno=147)
-            varDecl (lineno=148)
-                int (attr='int', lineno=148)
-                id (attr='token', lineno=148)
-            exprStmt (lineno=150)
-                ASSIGN (lineno=150)
-                    id (attr='l', lineno=150)
-                    funcCall (lineno=150)
-                        id (attr='F', lineno=150)
-                        actuals (lineno=150)
-            whileStmt (lineno=151)
-                OR (lineno=151)
-                    EQ (lineno=151)
-                        funcCall (lineno=151)
-                            id (attr='peek', lineno=151)
-                            actuals (lineno=151)
-                        id (attr='TK_MUL', lineno=151)
-                    EQ (lineno=151)
-                        funcCall (lineno=151)
-                            id (attr='peek', lineno=151)
-                            actuals (lineno=151)
-                        id (attr='TK_DIV', lineno=151)
-                block (lineno=152)
-                    exprStmt (lineno=152)
-                        funcCall (lineno=152)
-                            id (attr='match', lineno=152)
-                            actuals (lineno=152)
-                                ASSIGN (lineno=152)
-                                    id (attr='token', lineno=152)
-                                    funcCall (lineno=152)
-                                        id (attr='peek', lineno=152)
-                                        actuals (lineno=152)
-                    exprStmt (lineno=153)
-                        ASSIGN (lineno=153)
-                            id (attr='r', lineno=153)
-                            funcCall (lineno=153)
-                                id (attr='F', lineno=153)
-                                actuals (lineno=153)
-                    ifElseStmt (lineno=155)
-                        EQ (lineno=155)
-                            id (attr='token', lineno=155)
-                            id (attr='TK_MUL', lineno=155)
-                        exprStmt (lineno=156)
-                            ASSIGN (lineno=156)
-                                id (attr='l', lineno=156)
-                                MUL (lineno=156)
-                                    id (attr='l', lineno=156)
-                                    id (attr='r', lineno=156)
-                        exprStmt (lineno=158)
-                            ASSIGN (lineno=158)
-                                id (attr='l', lineno=158)
-                                DIV (lineno=158)
-                                    id (attr='l', lineno=158)
-                                    id (attr='r', lineno=158)
-            returnStmt (lineno=160)
-                id (attr='l', lineno=160)
-    funcDecl (lineno=163)
-        int (attr='int', lineno=163)
-        id (attr='F', lineno=163)
-        formals (lineno=163)
-        block (lineno=165)
-            varDecl (lineno=165)
-                int (attr='int', lineno=165)
-                id (attr='result', lineno=165)
-            varDecl (lineno=167)
-                int (attr='int', lineno=167)
-                id (attr='token', lineno=167)
-            exprStmt (lineno=168)
-                ASSIGN (lineno=168)
-                    id (attr='token', lineno=168)
-                    funcCall (lineno=168)
-                        id (attr='peek', lineno=168)
-                        actuals (lineno=168)
-            ifElseStmt (lineno=170)
-                EQ (lineno=170)
-                    id (attr='token', lineno=170)
-                    id (attr='TK_LPAREN', lineno=170)
-                block (lineno=171)
-                    exprStmt (lineno=171)
-                        funcCall (lineno=171)
-                            id (attr='match', lineno=171)
-                            actuals (lineno=171)
-                                id (attr='TK_LPAREN', lineno=171)
-                    exprStmt (lineno=172)
-                        ASSIGN (lineno=172)
-                            id (attr='result', lineno=172)
-                            funcCall (lineno=172)
-                                id (attr='E', lineno=172)
-                                actuals (lineno=172)
-                    exprStmt (lineno=173)
-                        funcCall (lineno=173)
-                            id (attr='match', lineno=173)
-                            actuals (lineno=173)
-                                id (attr='TK_RPAREN', lineno=173)
-                ifElseStmt (lineno=175)
-                    EQ (lineno=175)
-                        id (attr='token', lineno=175)
-                        id (attr='TK_SUB', lineno=175)
-                    block (lineno=176)
-                        exprStmt (lineno=176)
-                            funcCall (lineno=176)
-                                id (attr='match', lineno=176)
-                                actuals (lineno=176)
-                                    id (attr='TK_SUB', lineno=176)
-                        exprStmt (lineno=177)
-                            ASSIGN (lineno=177)
-                                id (attr='result', lineno=177)
-                                UMINUS (lineno=177)
-                                    funcCall (lineno=177)
-                                        id (attr='F', lineno=177)
-                                        actuals (lineno=177)
-                    ifElseStmt (lineno=179)
-                        EQ (lineno=179)
-                            id (attr='token', lineno=179)
-                            id (attr='TK_NUMBER', lineno=179)
-                        block (lineno=180)
-                            exprStmt (lineno=180)
-                                funcCall (lineno=180)
-                                    id (attr='match', lineno=180)
-                                    actuals (lineno=180)
-                                        id (attr='TK_NUMBER', lineno=180)
-                            exprStmt (lineno=181)
-                                ASSIGN (lineno=181)
-                                    id (attr='result', lineno=181)
-                                    id (attr='attr', lineno=181)
-                        block (lineno=184)
-                            exprStmt (lineno=184)
-                                funcCall (lineno=184)
-                                    id (attr='prints', lineno=184)
-                                    actuals (lineno=184)
-                                        string (attr='"Error: expected factor.\\n"', lineno=184)
-                            exprStmt (lineno=185)
-                                funcCall (lineno=185)
-                                    id (attr='halt', lineno=185)
-                                    actuals (lineno=185)
-            returnStmt (lineno=187)
-                id (attr='result', lineno=187)
-    globVarDecl (lineno=194)
-        int (attr='int', lineno=194)
-        id (attr='EOF', lineno=194)
-    globVarDecl (lineno=196)
-        int (attr='int', lineno=196)
-        id (attr='TK_EOF', lineno=196)
-    globVarDecl (lineno=197)
-        int (attr='int', lineno=197)
-        id (attr='TK_EOLN', lineno=197)
-    globVarDecl (lineno=198)
-        int (attr='int', lineno=198)
-        id (attr='TK_NUMBER', lineno=198)
-    globVarDecl (lineno=199)
-        int (attr='int', lineno=199)
-        id (attr='TK_ADD', lineno=199)
-    globVarDecl (lineno=200)
-        int (attr='int', lineno=200)
-        id (attr='TK_SUB', lineno=200)
-    globVarDecl (lineno=201)
-        int (attr='int', lineno=201)
-        id (attr='TK_MUL', lineno=201)
-    globVarDecl (lineno=202)
-        int (attr='int', lineno=202)
-        id (attr='TK_DIV', lineno=202)
-    globVarDecl (lineno=203)
-        int (attr='int', lineno=203)
-        id (attr='TK_LPAREN', lineno=203)
-    globVarDecl (lineno=204)
-        int (attr='int', lineno=204)
-        id (attr='TK_RPAREN', lineno=204)
-    globVarDecl (lineno=206)
-        int (attr='int', lineno=206)
-        id (attr='ASCII_0', lineno=206)
-    globVarDecl (lineno=207)
-        int (attr='int', lineno=207)
-        id (attr='ASCII_9', lineno=207)
-    globVarDecl (lineno=208)
-        int (attr='int', lineno=208)
-        id (attr='ASCII_PLUS', lineno=208)
-    globVarDecl (lineno=209)
-        int (attr='int', lineno=209)
-        id (attr='ASCII_MINUS', lineno=209)
-    globVarDecl (lineno=210)
-        int (attr='int', lineno=210)
-        id (attr='ASCII_STAR', lineno=210)
-    globVarDecl (lineno=211)
-        int (attr='int', lineno=211)
-        id (attr='ASCII_SLASH', lineno=211)
-    globVarDecl (lineno=212)
-        int (attr='int', lineno=212)
-        id (attr='ASCII_LPAREN', lineno=212)
-    globVarDecl (lineno=213)
-        int (attr='int', lineno=213)
-        id (attr='ASCII_RPAREN', lineno=213)
-    globVarDecl (lineno=214)
-        int (attr='int', lineno=214)
-        id (attr='ASCII_SPACE', lineno=214)
-    globVarDecl (lineno=215)
-        int (attr='int', lineno=215)
-        id (attr='ASCII_TAB', lineno=215)
-    globVarDecl (lineno=216)
-        int (attr='int', lineno=216)
-        id (attr='ASCII_CR', lineno=216)
-    globVarDecl (lineno=217)
-        int (attr='int', lineno=217)
-        id (attr='ASCII_NL', lineno=217)
-    funcDecl (lineno=219)
-        void (attr='void', lineno=219)
-        id (attr='init', lineno=219)
-        formals (lineno=219)
-        block (lineno=221)
-            exprStmt (lineno=221)
-                ASSIGN (lineno=221)
-                    id (attr='EOF', lineno=221)
-                    number (attr='-1', lineno=221)
-            exprStmt (lineno=223)
-                ASSIGN (lineno=223)
-                    id (attr='ASCII_0', lineno=223)
-                    number (attr='48', lineno=223)
-            exprStmt (lineno=224)
-                ASSIGN (lineno=224)
-                    id (attr='ASCII_9', lineno=224)
-                    number (attr='57', lineno=224)
-            exprStmt (lineno=225)
-                ASSIGN (lineno=225)
-                    id (attr='ASCII_PLUS', lineno=225)
-                    number (attr='43', lineno=225)
-            exprStmt (lineno=226)
-                ASSIGN (lineno=226)
-                    id (attr='ASCII_MINUS', lineno=226)
-                    number (attr='45', lineno=226)
-            exprStmt (lineno=227)
-                ASSIGN (lineno=227)
-                    id (attr='ASCII_STAR', lineno=227)
-                    number (attr='42', lineno=227)
-            exprStmt (lineno=228)
-                ASSIGN (lineno=228)
-                    id (attr='ASCII_SLASH', lineno=228)
-                    number (attr='47', lineno=228)
-            exprStmt (lineno=229)
-                ASSIGN (lineno=229)
-                    id (attr='ASCII_LPAREN', lineno=229)
-                    number (attr='40', lineno=229)
-            exprStmt (lineno=230)
-                ASSIGN (lineno=230)
-                    id (attr='ASCII_RPAREN', lineno=230)
-                    number (attr='41', lineno=230)
-            exprStmt (lineno=231)
-                ASSIGN (lineno=231)
-                    id (attr='ASCII_SPACE', lineno=231)
-                    number (attr='32', lineno=231)
-            exprStmt (lineno=232)
-                ASSIGN (lineno=232)
-                    id (attr='ASCII_TAB', lineno=232)
-                    number (attr='9', lineno=232)
-            exprStmt (lineno=233)
-                ASSIGN (lineno=233)
-                    id (attr='ASCII_CR', lineno=233)
-                    number (attr='13', lineno=233)
-            exprStmt (lineno=234)
-                ASSIGN (lineno=234)
-                    id (attr='ASCII_NL', lineno=234)
-                    number (attr='10', lineno=234)
-            exprStmt (lineno=236)
-                ASSIGN (lineno=236)
-                    id (attr='TK_EOF', lineno=236)
-                    number (attr='256', lineno=236)
-            exprStmt (lineno=237)
-                ASSIGN (lineno=237)
-                    id (attr='TK_NUMBER', lineno=237)
-                    number (attr='257', lineno=237)
-            exprStmt (lineno=238)
-                ASSIGN (lineno=238)
-                    id (attr='TK_ADD', lineno=238)
-                    id (attr='ASCII_PLUS', lineno=238)
-            exprStmt (lineno=239)
-                ASSIGN (lineno=239)
-                    id (attr='TK_SUB', lineno=239)
-                    id (attr='ASCII_MINUS', lineno=239)
-            exprStmt (lineno=240)
-                ASSIGN (lineno=240)
-                    id (attr='TK_MUL', lineno=240)
-                    id (attr='ASCII_STAR', lineno=240)
-            exprStmt (lineno=241)
-                ASSIGN (lineno=241)
-                    id (attr='TK_DIV', lineno=241)
-                    id (attr='ASCII_SLASH', lineno=241)
-            exprStmt (lineno=242)
-                ASSIGN (lineno=242)
-                    id (attr='TK_LPAREN', lineno=242)
-                    id (attr='ASCII_LPAREN', lineno=242)
-            exprStmt (lineno=243)
-                ASSIGN (lineno=243)
-                    id (attr='TK_RPAREN', lineno=243)
-                    id (attr='ASCII_RPAREN', lineno=243)
-            exprStmt (lineno=244)
-                ASSIGN (lineno=244)
-                    id (attr='TK_EOLN', lineno=244)
-                    id (attr='ASCII_NL', lineno=244)
+                ASSIGN (lineno=7, sig='bool')
+                    id (attr='b', lineno=7, sym=sym9, sig='bool')
+                    GE (lineno=7, sig='bool')
+                        SUB (lineno=7, sig='int')
+                            ADD (lineno=7, sig='int')
+                                number (attr='2', lineno=7, sig='int')
+                                MUL (lineno=7, sig='int')
+                                    number (attr='3', lineno=7, sig='int')
+                                    number (attr='5', lineno=7, sig='int')
+                            number (attr='123', lineno=7, sig='int')
+                        UMINUS (lineno=7, sig='int')
+                            UMINUS (lineno=7, sig='int')
+                                UMINUS (lineno=7, sig='int')
+                                    id (attr='x', lineno=7, sym=sym8, sig='int')
+            exprStmt (lineno=9)
+                ASSIGN (lineno=9, sig='bool')
+                    id (attr='b', lineno=9, sym=sym9, sig='bool')
+                    NE (lineno=9, sig='bool')
+                        NOT (lineno=9, sig='bool')
+                            NOT (lineno=9, sig='bool')
+                                NOT (lineno=9, sig='bool')
+                                    OR (lineno=9, sig='bool')
+                                        AND (lineno=9, sig='bool')
+                                            true (attr='true', lineno=9, sig='bool')
+                                            false (attr='false', lineno=9, sig='bool')
+                                        EQ (lineno=9, sig='bool')
+                                            id (attr='b', lineno=9, sym=sym9, sig='bool')
+                                            true (attr='true', lineno=9, sig='bool')
+                        LE (lineno=9, sig='bool')
+                            number (attr='5', lineno=9, sig='int')
+                            number (attr='6', lineno=9, sig='int')
 
 
 STDERR:
@@ -1331,7 +819,58 @@ STDERR:
 
 RETURN CODE: 0
 
-Run ended on Wed Feb 25 00:51:51 2026
+-------------------------------------------------------------------------------
+Test: local variable scope check |
+----------------------------------
+
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t30
+
+STDOUT:
+program (lineno=3)
+    globVarDecl (lineno=3)
+        int (attr='int', lineno=3, sig='int')
+        id (attr='i', lineno=3, sym=sym7, sig='int')
+    mainDecl (lineno=5)
+        void (lineno=5, sig='void')
+        id (attr='main', lineno=5, sym=sym8, sig='f()')
+        formals (lineno=5)
+        block (lineno=7)
+            exprStmt (lineno=7)
+                funcCall (lineno=7, sig='void')
+                    id (attr='printi', lineno=7, sym=sym2, sig='f(int)')
+                    actuals (lineno=7)
+                        id (attr='i', lineno=7, sym=sym7, sig='int')
+            varDecl (lineno=8, sig='bool')
+                bool (attr='boolean', lineno=8, sig='bool')
+                id (attr='i', lineno=8, sym=sym9, sig='bool')
+            exprStmt (lineno=9)
+                funcCall (lineno=9, sig='void')
+                    id (attr='printb', lineno=9, sym=sym3, sig='f(bool)')
+                    actuals (lineno=9)
+                        id (attr='i', lineno=9, sym=sym9, sig='bool')
+
+
+STDERR:
+
+
+RETURN CODE: 0
+
+-------------------------------------------------------------------------------
+Test: a marvelous cameo by doc octalpus |
+-----------------------------------------
+
+% /usr/bin/python3 main.py /home/profs/aycock/411/TEST/ms3/semantic.t31
+
+STDOUT:
+
+
+STDERR:
+error: number out of range at or near line 6
+
+
+RETURN CODE: 1
+
+Run ended on Fri Mar 20 19:16:18 2026
 ```
 
 ## Custom Testing tool output
@@ -1368,7 +907,7 @@ python test/run_tests.py lex ./main_lexer.py test/tests/lex
 >> Test: comment_form_feed.json passed!
 >> Test: string_form_feed.json passed!
 >> Summary (lex): 30/30 tests passed
-python test/run_tests.py parse ./main.py test/tests/parse
+python test/run_tests.py parse ./main_parser.py test/tests/parse
 >> Test: global_variable_declarations.json passed!
 >> Test: more_and_more_complex_global_declarations.json passed!
 >> Test: the_main_problem.json passed!
@@ -1387,11 +926,172 @@ python test/run_tests.py parse ./main.py test/tests/parse
 >> Test: syntax_error?.json passed!
 >> Test: syntax_error.json passed!
 >> Summary (parse): 17/17 tests passed
+python test/run_tests.py sem ./main.py test/tests/semantic
+>> Test: a_forward-looking_test.json passed!
+>> Test: a_marvelous_cameo_by_doc_octalpus.json passed!
+>> Test: as_the_Germans_say:_nine.json passed!
+>> Test: brake_the_compiler.json passed!
+>> Test: deep_type_propagation.json passed!
+>> Test: duplicate_global_names.json passed!
+>> Test: either_syntax_or_semantics.json passed!
+>> Test: function_call_doesnt_match_declaration.json passed!
+>> Test: local_variable_scope_check.json passed!
+>> Test: main_cant_return_a_value.json passed!
+>> Test: main_function_with_parameter.json passed!
+>> Test: missing_main_declaration.json passed!
+>> Test: missing_return.json passed!
+>> Test: mixing_statements_and_declarations.json passed!
+>> Test: nested_breaks.json passed!
+>> Test: no_declarations_in_inner_blocks.json passed!
+>> Test: nonlocal_variable_access_type_checking.json passed!
+>> Test: omg_but_this_check_passes_lol.json passed!
+>> Test: omg_its_like_a_literal_range_check.json passed!
+>> Test: one_isnt_true.json passed!
+>> Test: parameter_scope_check.json passed!
+>> Test: purple_main.json passed!
+>> Test: return_type_argument_mismatch.json passed!
+>> Test: return_type_mismatch.json passed!
+>> Test: support_your_local_library.json passed!
+>> Test: the_main_return.json passed!
+>> Test: the_return_of_return_type_mismatch.json passed!
+>> Test: type_mismatch.json passed!
+>> Test: undefined_variable.json passed!
+>> Test: will_the_real_main_please_stand_up.json passed!
+>> Test: you_never_call_me.json passed!
+>> Summary (sem): 31/31 tests passed
 ```
 
 ## Git Log 
+Note that the most recent entry is missing as it is committed to the repo with this file.
+For the most up to date log, clone the repo and use `git log`, or use the web interface.
 ```
-commit d301be734c40c8c01685952e3f3c6b7c6ec9e003
+commit 0dba49c14d453d8d3148caed148677c4493890f0
+Author: Avery Keuben <avery1516@gmail.com>
+Date:   Fri Mar 20 19:15:37 2026 -0600
+
+    Start milestone3.md document
+
+commit d8ca7b168fd392996c3c039fde42f43873ac2848
+Author: Avery Keuben <avery1516@gmail.com>
+Date:   Fri Mar 20 18:43:01 2026 -0600
+
+    Cleanup repo
+
+commit 06bcb069d17114c5077ffbce0c447635c164e4be
+Author: Avery Keuben <avery1516@gmail.com>
+Date:   Fri Mar 20 18:41:38 2026 -0600
+
+    Improve documentation
+
+commit dd1fff405a6927e0f03dbf52fefa570ca81d17d2
+Author: Avery Keuben <avery1516@gmail.com>
+Date:   Fri Mar 20 18:13:38 2026 -0600
+
+    fix: either_syntax_or_semantics.json
+
+commit 0e20181c729d8aa6bcd25d57f3e9acb573cb5b61
+Author: Avery Keuben <avery1516@gmail.com>
+Date:   Fri Mar 20 18:11:37 2026 -0600
+
+    Add integer bounds checking
+
+commit f264d55c4ba76233ecef741c20a7ae9eabc39560
+Author: Avery Keuben <avery1516@gmail.com>
+Date:   Fri Mar 20 18:05:25 2026 -0600
+
+    fix incorrect return statement checking
+
+commit 18897da708326466a030894b14a8dfad1761d729
+Author: Avery Keuben <avery1516@gmail.com>
+Date:   Fri Mar 20 17:57:32 2026 -0600
+
+    fix: parameter_scope_check.json
+
+commit 94527cb5d60c978119891b44ab4d9c2689c6662f
+Author: Avery Keuben <avery1516@gmail.com>
+Date:   Fri Mar 20 17:41:30 2026 -0600
+
+    Add return type checking
+
+commit 6d9f79f6456f4fba1c560ed14be937132a542667
+Author: Avery Keuben <avery1516@gmail.com>
+Date:   Fri Mar 20 17:22:10 2026 -0600
+
+    Add break check
+
+commit 0f7eafb2d5e65a07bbcb94ce0e6ad7c5a61fb392
+Author: Avery Keuben <avery1516@gmail.com>
+Date:   Fri Mar 20 17:14:17 2026 -0600
+
+    Fix scoping of formal parameter declarations
+
+commit 9c76c1e76aecb24cebdf41251a50959a6ad90ac2
+Author: Avery Keuben <avery1516@gmail.com>
+Date:   Fri Mar 20 16:32:09 2026 -0600
+
+    Basic pass 3
+
+commit 60d5956308b69ea4cace5763a3339df174e748f4
+Author: Avery Keuben <avery1516@gmail.com>
+Date:   Fri Mar 20 15:20:22 2026 -0600
+
+    Fix test system
+
+commit fcfad2443603959daa428c368e042cb29f964bbf
+Author: Avery Keuben <avery1516@gmail.com>
+Date:   Fri Mar 20 15:12:16 2026 -0600
+
+    Add new tests
+
+commit 553c8125e1f9c65ad5db6e94fd52fa13032b851a
+Author: Avery Keuben <avery1516@gmail.com>
+Date:   Fri Mar 20 14:50:01 2026 -0600
+
+    Add diff to test lib
+
+commit b5729937662cf136a0f1db3ffdca8cf178b4a3f3
+Author: Avery Keuben <avery1516@gmail.com>
+Date:   Thu Mar 19 23:21:02 2026 -0600
+
+    Add check: local declaration not in outermost block
+
+commit 18ea84d7c3f4b0570fc977d795389c6443c44ea6
+Author: Avery Keuben <avery1516@gmail.com>
+Date:   Thu Mar 19 23:16:53 2026 -0600
+
+    Add check: main declaration can't have parameters
+
+commit f9d8540a5cebd51bbd82a1f96d27a53b74b43917
+Author: Avery Keuben <avery1516@gmail.com>
+Date:   Thu Mar 19 23:11:39 2026 -0600
+
+    Add second pass
+
+commit de9c06714f15e8d008423a369326b86e8ffe8574
+Author: Avery Keuben <avery1516@gmail.com>
+Date:   Thu Mar 19 22:51:58 2026 -0600
+
+    Add first pass
+
+commit 019efcce52e037e45d94d652a368dd949098a976
+Author: Avery Keuben <avery1516@gmail.com>
+Date:   Thu Mar 19 21:08:46 2026 -0600
+
+    Add library functions to symbol table
+
+commit 1281863f93a7d476a60b8812e46577de94ca7112
+Author: Avery Keuben <avery1516@gmail.com>
+Date:   Thu Mar 19 20:59:19 2026 -0600
+
+    Better types for symbol table entries
+
+commit 2dcf6b961650ca5c63cd93749c51e2e28b169961
+Author: Avery Keuben <avery1516@gmail.com>
+Date:   Thu Mar 19 19:53:19 2026 -0600
+
+    Create basic symbol table
+
+commit f26502b3674f5c4450b63aceec1e214d3cce6cfe
 Author: Avery Keuben <avery1516@gmail.com>
 Date:   Wed Feb 25 00:51:16 2026 -0700
 
