@@ -1,14 +1,13 @@
 from src.core.logging import logError
 from src.core.cpsc411 import AstTraversal, Ast
 
-from src.semantics.types import Type, TypeBoolean, TypeFunction, TypeInt, TypeVoid
+from src.semantics.types import Type, TypeVoid
 
 from src.semantics.symbol_table import SymbolTable
 
 class Pass4(AstTraversal):
     """
-    Pass one is responsable for collecting all 
-    global declarations, and 
+    Pass 4 is responsible for misc checks
     """
 
     table: SymbolTable
@@ -22,16 +21,21 @@ class Pass4(AstTraversal):
         self.breakDepth = 0
         self.expectedReturnType = TypeVoid()
         
-    def n_whileStmt(self, node: Ast):
+    # Ensure break statements are within a while expression
+    def n_whileStmt(self, _: Ast):
         self.breakDepth += 1 
 
-    def n_whileStmt_exit(self, node: Ast):
+    def n_whileStmt_exit(self, _: Ast):
         self.breakDepth -= 1
 
     def n_breakStmt(self, node: Ast):
         if self.breakDepth <= 0:
             logError("break must be inside 'while'", node.lineno)
 
+    # Ensure that the return type of a function is correct.
+    # We waited until stage 4 here as this check is easier with 
+    # a preorder traversal, as we can save the expected type on enter,
+    # and check once a return is encountered, or upon exiting the function
     def n_funcDecl(self, node: Ast):
         self.expectedReturnType = node[0].sig
         self.foundReturn = False
@@ -44,7 +48,7 @@ class Pass4(AstTraversal):
         if not self.foundReturn and retNode.sig != TypeVoid():
             logError(f'no return statement in non-void function {repr(name)}')
 
-    def n_mainDecl(self, node: Ast):
+    def n_mainDecl(self, _: Ast):
         self.expectedReturnType = TypeVoid()
 
     def n_returnStmt(self, node: Ast):
@@ -62,19 +66,21 @@ class Pass4(AstTraversal):
 
         self.foundReturn = True;
 
+    # Ensure integer literals are in range.
     def n_number(self, node: Ast):
+        # We only look at absolute values 
+        # as we use lexographical ordering to compare the literal 
+        # with the bounds
         MAX_INT = "2147483647"
         MIN_INT = "2147483648"
 
-        num: str = node.attr
-
+        # The two values to comapre
+        num: str = node.attr.strip()
         comparison = MAX_INT
 
         if num[0] == "-":
             comparison = MIN_INT
             num = num[1:]
-
-        num = num.strip()
 
         if len(num) < len(comparison):
             return 
@@ -86,7 +92,8 @@ class Pass4(AstTraversal):
         # since they are the same size.
         if num > comparison:
             logError("number out of range", node.lineno)
-        
+
+    # Ensure that expression statements are only assignments or function calls.
     def n_exprStmt(self, node: Ast):
         child = node[0]
 

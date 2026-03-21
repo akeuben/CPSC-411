@@ -19,7 +19,14 @@ class Pass1(AstTraversal):
         self.table = table
         self.mainFound = False
 
+    # Ensure there is a main function
+    def n_program(self, _: Ast):
+        if not self.mainFound:
+            logError("no main declaration found")
+
+    # Collecting types for global declarations
     def n_funcDecl(self, node: Ast):
+        # Destructure children
         retTypeNode = node[0]
         idNode = node[1]
         formalsNode = node[2]
@@ -41,9 +48,10 @@ class Pass1(AstTraversal):
         # Check if this is a second main function
         if self.mainFound:
             logError("multiple main declarations found")
-        
+
         self.mainFound = True
 
+        # Destructure children
         retTypeNode = node[0]
         idNode = node[1]
         formalsNode = node[2]
@@ -61,21 +69,23 @@ class Pass1(AstTraversal):
             logError(f'{repr(name)} redefined', node.lineno)
         self.table.declare(name, sig)
 
+    def n_formal(self, node: Ast):
+        node.sig = node[0].sig 
+
     def n_globVarDecl(self, node: Ast):
+        # Destructure children
         typeNode = node[0]
         idNode = node[1]
 
         name = idNode.attr
         sig = typeNode.sig 
-        
+
         # Add entry to the symbol table
         if self.table.alreadyDefined(name):
             logError(f'{repr(name)} redefined', node.lineno)
         self.table.declare(node[1].attr, sig)
 
-    def n_formal(self, node: Ast):
-        node.sig = node[0].sig 
-
+    # Assigning signatures to types
     def n_void(self, node: Ast):
         node.sig = TypeVoid()
 

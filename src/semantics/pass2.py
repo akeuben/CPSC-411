@@ -17,37 +17,41 @@ class Pass2(AstTraversal):
         self.table = table
         self.depth = 0
 
+    # We take advantage of the ordering of the children nodes of funcDecl/mainDecl 
+    # and the fact that this is a preorder traveral. We don't want the scope to 
+    # start when encountering the funcDecl node, as the id of the function (a child of 
+    # funcDecl) does not belong to that local scope, instead, the global scope.
     def n_formals(self, _: Ast):
-        self.depth += 1
         self.table.useScope()
-    
-    def n_formals_exit(self, _: Ast):
-        self.depth -= 1
 
+    # Only once we leave both the formals and the top most block do we return the scope,
+    # which equivalent to when we leave the function delaration
     def n_mainDecl_exit(self, _: Ast):
         self.table.returnScope()
 
+    # Only once we leave both the formals and the top most block do we return the scope,
+    # which equivalent to when we leave the function delaration
     def n_funcDecl_exit(self, _: Ast):
         self.table.returnScope()
 
     def n_formal(self, node: Ast):
-        if self.depth != 1:
-            logError("local declaration not in outermost block", node.lineno)
-
+        # Destructure children
         typeNode = node[0]
         idNode = node[1]
 
         name = idNode.attr
         sig = typeNode.sig 
-        
+
         # Add entry to the symbol table
         if self.table.alreadyDefined(name):
             logError(f'{repr(name)} redefined', node.lineno)
-
         self.table.declare(name, sig)
 
         node.sig = sig
 
+    # Entering or leaving a block changes the depth of the current scope. We 
+    # must keep track of this to ensure local variables are not declared in 
+    # an inner scope.
     def n_block(self, _: Ast):
         self.depth += 1
 
@@ -58,12 +62,13 @@ class Pass2(AstTraversal):
         if self.depth != 1:
             logError("local declaration not in outermost block", node.lineno)
 
+        # Destructure children
         typeNode = node[0]
         idNode = node[1]
 
         name = idNode.attr
         sig = typeNode.sig 
-        
+
         # Add entry to the symbol table
         if self.table.alreadyDefined(name):
             logError(f'{repr(name)} redefined', node.lineno)
@@ -71,6 +76,8 @@ class Pass2(AstTraversal):
 
         node.sig = sig
 
+    # At this point, we are free to lookup and resolve id nodes to their declared entries 
+    # in the symbol table
     def n_id(self, node: Ast):
         name = node.attr
         entry = self.table.lookup(name)

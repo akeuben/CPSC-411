@@ -5,14 +5,11 @@ import os
 
 from src.semantics.semantic_checking import check_semantics
 from src.semantics.view import PrettyView
-from src.semantics.symbol_table import SymbolTable
-from src.semantics.pass1 import Pass1
 from src.parse.shaping import Shaper
 from src.parse.shape import shape
 from src.parse.parser import parserFromLexer
 from src.lex.lexer import lexerFromPath
 from src.core.logging import logUsage, logUnknownFile
-from src.core.cpsc411 import AstView
 
 def main() -> None:
     if len(sys.argv) != 2:
@@ -33,14 +30,15 @@ def main() -> None:
 
     table = check_semantics(tree)
 
-    PrettyView(tree).txt()
+    view = PrettyView(tree)
 
-    # table.print()
-    
+    view.txt()
+
     # Set the environment variable DEBUG to anything 
     # to display the parse tree in an X11 window
     if os.environ.get("DEBUG"):
-        AstView(tree).x11()
+        view.x11()
+        table.print()
 
 if __name__ == '__main__':
     main()
