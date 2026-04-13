@@ -1,10 +1,9 @@
-class LabelGenerator():
-    def __init__(self):
-        self.counter = 0
+from abc import abstractmethod
+from typing import List
+from src.codegen.allocator import RegisterAllocator, StackAllocator
+from src.semantics.symbol_table import SymbolTable
+from src.semantics.types import Type
 
-    def acquire(self):
-        self.counter += 1
-        return self.counter
 
 class Codegen():
     def __init__(self):
@@ -13,31 +12,70 @@ class Codegen():
     def outputLabel(self, id):
         print(f"L{id}:")
 
+    @abstractmethod
     def outputStandardLibrary(self):
-        raise RuntimeError("Not implemented")
+        pass
 
+    @abstractmethod
     def outputMainFunctionDeclaration(self):
-        raise RuntimeError("Not implemented")
+        pass
 
-    def outputFunctionDeclaration(self):
-        raise RuntimeError("Not implemented")
+    @abstractmethod
+    def outputFunctionDeclaration(self, sym: str):
+        pass
 
+    @abstractmethod
     def outputGlobalVariableDeclaration(self, varType: Type):
-        raise RuntimeError("Not implemented")
+        pass
 
-    def outputFunctionPreamble(self, stackInfo: StackInfo):
-        raise RuntimeError("Not implemented")
+    @abstractmethod
+    def outputFunctionPreamble(self, stackInfo: StackAllocator, formals: List[str]):
+        pass
 
-    def outputFunctionPostamble(self, stackInfo: StackInfo):
-        raise RuntimeError("Mot implemented")
+    @abstractmethod
+    def outputFunctionPostamble(self, stackInfo: StackAllocator):
+        pass
 
+    @abstractmethod
     def outputSaveRegisters(self, alloc: RegisterAllocator):
-        raise RuntimeError("Not implemented")
+        pass
 
+    @abstractmethod
     def outputRestoreRegisters(self, alloc: RegisterAllocator):
-        raise RuntimeError("Not implemented")
+        pass
 
-    def outputFunctionCall(self, table: SymbolTable):
-        raise RuntimeError("Not implemented")
+    @abstractmethod
+    def outputFunctionCall(self, sym: SymbolTable):
+        pass
 
+    @abstractmethod
+    def outputMainExit(self):
+        pass
 
+    @abstractmethod
+    def outputStringLiteral(self, string: str, label: int):
+        pass
+
+    @abstractmethod
+    def outputLoadIntegerStack(self, register: str, offset: int):
+        pass
+
+    @abstractmethod
+    def outputLoadIntegerImm(self, register: str, value: str):
+        pass
+
+    @abstractmethod
+    def outputLoadByteImm(self, register: str, value: str):
+        pass 
+
+    @abstractmethod
+    def outputLoadAddress(self, register: str, label: int):
+        pass
+
+    @abstractmethod
+    def outputAdd(self, registerResult: str, registerA: str, registerB: str):
+        pass
+
+    @abstractmethod 
+    def outputCallFunction(self, paramRegisters: List[str], functionSym: str):
+        pass

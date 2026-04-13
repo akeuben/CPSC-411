@@ -16,6 +16,7 @@
                 pkgs.stdenv.cc.cc.lib
                 pkgs.antlr
                 pkgs.graphviz
+                pkgs.xspim
             ];
 
             runScript = "fish";

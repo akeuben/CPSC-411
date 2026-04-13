@@ -1,15 +1,15 @@
 .text
 
-Lgetchar:
+sym5:
 	li $v0, 12
 	syscall
 	jr $ra
 
-Lhalt:
+sym6:
 	li $v0, 10
 	syscall
 
-Lprintb:
+sym3:
 	li $v0, 4
 	bne $a0, $zero, STDL1
 .data
@@ -24,17 +24,17 @@ STDL2:
 	syscall
 	jr $ra
 
-Lprintc:
+sym4:
 	li $v0, 11
 	syscall
 	jr $ra
 
-Lprinti:
+sym2:
 	li $v0, 1
 	syscall
 	jr $ra
 
-Lprints:
+sym1:
 	li $v0, 11
 	lb $s0, 0($a0)
 	move $s1, $a0		# Store the current address in s1

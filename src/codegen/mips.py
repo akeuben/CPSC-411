@@ -1,6 +1,23 @@
+from typing import List
+from src.core.logging import logError
+from src.codegen.allocator import StackAllocator
+from src.codegen.codegen import Codegen
+from enum import Enum
+
+class AsmMode(Enum):
+    UNDEFINED = ""
+    TEXT = ".text"
+    DATA = ".data"
+
 class MipsCodegen(Codegen):
     def __init__(self):
         super().__init__()
+        self.mode = AsmMode.UNDEFINED
+
+    def switchMode(self, mode):
+        if self.mode != mode:
+            print(mode.value)
+            self.mode = mode
 
     def outputStandardLibrary(self):
         with open("res/std-mips.s", "r") as f:
@@ -8,7 +25,75 @@ class MipsCodegen(Codegen):
             print(content)
 
     def outputMainFunctionDeclaration(self):
+        self.switchMode(AsmMode.TEXT)
         print("main:")
 
     def outputFunctionDeclaration(self, sym: str):
-        print(f"F{sym}:")
+        self.switchMode(AsmMode.TEXT)
+        print(f"{sym}:")
+
+    def outputFunctionPreamble(self, stackInfo: StackAllocator, formals: List[str]):
+        self.switchMode(AsmMode.TEXT)
+        size = stackInfo.size()
+        print(f"\taddi $sp, $sp, -{size}")
+        print(f"\tsw $ra, 0($sp)")
+        
+        i = 0
+        for sym, offset in stackInfo.allocations.items():
+            if sym == "__lr__":
+                continue
+            elif sym in formals:
+                print(f"\tsw $a{i}, {offset}($sp)")
+                i += 1
+            else:
+                print(f"\tsw $zero, {offset}($sp)")
+
+    def outputFunctionPostamble(self, stackInfo: StackAllocator):
+        self.switchMode(AsmMode.TEXT)
+        size = stackInfo.size()
+        print(f"\tlw $ra, 0($sp)")
+        print(f"\taddi $sp, $sp, {size}")
+        print(f"\tjr $ra")
+
+    def outputMainExit(self):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tjal sym6")
+
+    def outputStringLiteral(self, string: str, label: int):
+        self.switchMode(AsmMode.DATA)
+        length = len(string)
+        data = [str(ord(x)) for x in string]
+        self.outputLabel(label)
+        print(f".byte {length}, {", ".join(data)}")
+    
+    def outputLoadIntegerImm(self, register: str, value: str):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tli ${register}, {value}")
+
+    def outputLoadIntegerStack(self, register: str, offset: int):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tlw ${register}, {offset}($sp)")
+
+    def outputLoadByteImm(self, register: str, value: str):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tlb ${register}, {value}")
+
+    def outputLoadAddress(self, register: str, label: int):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tla ${register}, L{label}")
+
+    def outputAdd(self, registerResult: str, registerA: str, registerB: str):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tadd ${registerResult}, ${registerA}, ${registerB}")
+
+    def outputCallFunction(self, paramRegisters: List[str], functionSym: str):
+        self.switchMode(AsmMode.TEXT)
+
+        for i in range(len(paramRegisters)):
+            param = paramRegisters[i]
+
+            if i >= 4:
+                logError("Too many function parameters! Maximum is for for the mips target.")
+
+            print(f"\tmove $a{i}, ${param}")
+        print(f"\tjal {functionSym}")
