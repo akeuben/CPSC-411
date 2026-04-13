@@ -19,6 +19,9 @@ class MipsCodegen(Codegen):
             print(mode.value)
             self.mode = mode
 
+    def getReturnRegister(self):
+        return "v0"
+
     def outputStandardLibrary(self):
         with open("res/std-mips.s", "r") as f:
             content = f.read()

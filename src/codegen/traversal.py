@@ -92,7 +92,7 @@ class FunctionBodyTraversal(AstTraversal):
 
             self.alloc.register.free(node[0].reg)
 
-            self.codegen.outputMove("v0", node[0].reg)
+            self.codegen.outputMove(self.codegen.getReturnRegister(), node[0].reg)
         else:
             pass 
 
@@ -152,7 +152,7 @@ class ExpressionTraversal(AstTraversal):
 
         register = self.alloc.register.alloc()
         node.reg = register
-        self.codegen.outputMove(register, "v0")
+        self.codegen.outputMove(register, self.codegen.getReturnRegister())
 
         self.prune()
 

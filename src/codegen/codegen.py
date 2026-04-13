@@ -13,6 +13,10 @@ class Codegen():
         print(f"L{id}:")
 
     @abstractmethod
+    def getReturnRegister(self) -> str:
+        pass
+
+    @abstractmethod
     def outputStandardLibrary(self):
         pass
 
@@ -94,4 +98,8 @@ class Codegen():
 
     @abstractmethod
     def outputJump(self, label: int):
+        pass
+
+    @abstractmethod
+    def outputRuntimeReturnCheck(self, msgLabel: int):
         pass
