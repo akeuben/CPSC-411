@@ -49,7 +49,7 @@ class Codegen():
         pass
 
     @abstractmethod
-    def outputMainExit(self):
+    def outputMainExit(self, stack: StackAllocator):
         pass
 
     @abstractmethod
@@ -72,10 +72,26 @@ class Codegen():
     def outputLoadAddress(self, register: str, label: int):
         pass
 
+    @abstractmethod 
+    def outputStoreRegisterStack(self, register: str, offset: int):
+        pass 
+
+    @abstractmethod 
+    def outputStoreRegisterAddress(self, register: str, label: str):
+        pass
+
     @abstractmethod
     def outputAdd(self, registerResult: str, registerA: str, registerB: str):
         pass
 
     @abstractmethod 
     def outputCallFunction(self, paramRegisters: List[str], functionSym: str):
+        pass
+
+    @abstractmethod
+    def outputMove(self, dst: str, src: str):
+        pass
+
+    @abstractmethod
+    def outputJump(self, label: int):
         pass

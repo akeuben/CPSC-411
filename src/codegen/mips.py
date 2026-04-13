@@ -1,6 +1,6 @@
 from typing import List
 from src.core.logging import logError
-from src.codegen.allocator import StackAllocator
+from src.codegen.allocator import RegisterAllocator, StackAllocator
 from src.codegen.codegen import Codegen
 from enum import Enum
 
@@ -55,8 +55,40 @@ class MipsCodegen(Codegen):
         print(f"\taddi $sp, $sp, {size}")
         print(f"\tjr $ra")
 
-    def outputMainExit(self):
+    def outputSaveRegisters(self, alloc: RegisterAllocator):
         self.switchMode(AsmMode.TEXT)
+        allocated = alloc.getUsed()
+        size = len(allocated) * 4
+
+        if size == 0:
+            return
+
+        print(f"\taddi $sp, $sp, -{size}")
+        offset = 0
+        for reg in allocated:
+            print(f"\tsw ${reg}, {offset}($sp)")
+            offset += 4
+
+    def outputRestoreRegisters(self, alloc: RegisterAllocator):
+        self.switchMode(AsmMode.TEXT)
+        allocated = alloc.getUsed()
+        size = len(allocated) * 4
+
+        if size == 0:
+            return
+
+        print(f"\taddi $sp, $sp, {size}")
+        offset = 0
+        for reg in allocated:
+            print(f"\tlw ${reg}, {offset}($sp)")
+            offset += 4
+
+
+    def outputMainExit(self, stack: StackAllocator):
+        self.switchMode(AsmMode.TEXT)
+        size = stack.size()
+        print(f"\tlw $ra, 0($sp)")
+        print(f"\taddi $sp, $sp, {size}")
         print(f"\tjal sym6")
 
     def outputStringLiteral(self, string: str, label: int):
@@ -82,6 +114,14 @@ class MipsCodegen(Codegen):
         self.switchMode(AsmMode.TEXT)
         print(f"\tla ${register}, L{label}")
 
+    def outputStoreRegisterStack(self, register: str, offset: int):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tsw ${register}, {offset}($sp)");
+
+    def outputStoreRegisterAddress(self, register: str, label: str):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tsw ${register}, {label}");
+
     def outputAdd(self, registerResult: str, registerA: str, registerB: str):
         self.switchMode(AsmMode.TEXT)
         print(f"\tadd ${registerResult}, ${registerA}, ${registerB}")
@@ -97,3 +137,17 @@ class MipsCodegen(Codegen):
 
             print(f"\tmove $a{i}, ${param}")
         print(f"\tjal {functionSym}")
+
+    def outputMove(self, dst: str, src: str):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tmove ${dst}, ${src}")
+
+    def outputJump(self, label: int):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tj L{label}")
+
+    def outputRuntimeReturnCheck(self, msgLabel: int):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tla $a0, L{msgLabel}")
+        print("\tjal sym1")
+        print("\tjal sym6")

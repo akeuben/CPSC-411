@@ -1,5 +1,4 @@
 .text
-
 sym5:
 	li $v0, 12
 	syscall

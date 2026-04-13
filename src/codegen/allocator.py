@@ -6,7 +6,7 @@ from src.core.logging import logError
 class RegisterAllocator():
 
     @abstractmethod
-    def getUsed(self):
+    def getUsed(self) -> List[str]:
         pass
 
     @abstractmethod
@@ -32,6 +32,9 @@ class BasicMipsRegisterAllocator(RegisterAllocator):
     def free(self, register: str):
         self.freeList.append(register)
         self.usedList.remove(register)
+
+    def getUsed(self) -> List[str]:
+        return self.usedList
 
 class StackAllocator():
     def __init__(self):

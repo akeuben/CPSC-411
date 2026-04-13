@@ -2,7 +2,7 @@ from src.core.logging import logWarning
 from src.codegen.codegen import Codegen
 from src.codegen.allocator import AllocatorBundle, StackAllocator
 from src.core.cpsc411 import *
-from src.semantics.types import Type, TypeBoolean, TypeInt
+from src.semantics.types import Type, TypeBoolean, TypeInt, TypeVoid
 
 def generateCode(codegen: Codegen, alloc: AllocatorBundle, ast: Ast):
     traversal = ProgramTraversal(codegen, alloc)
@@ -26,6 +26,8 @@ class ProgramTraversal(AstTraversal):
         stack.alloc(4, "__lr__")
         stackTraversal = StackTraversal(stack)
         stackTraversal.preorder(node)
+
+        retLabel = self.alloc.label.alloc()
         
         formals = []
         for child in node[2]:
@@ -35,9 +37,15 @@ class ProgramTraversal(AstTraversal):
         self.codegen.outputFunctionDeclaration(node[1].sym)
         self.codegen.outputFunctionPreamble(stack, formals)
         
-        traversal = BlockTraversal(self.codegen, self.alloc, stack)
+        traversal = FunctionBodyTraversal(self.codegen, self.alloc, stack, retLabel)
         traversal.preorder(node[3])
+
+        if node[0].sig != TypeVoid():
+            label = self.alloc.label.alloc()
+            self.codegen.outputStringLiteral(f"error: function {node[1].attr} must return a value at or near line {node[1].lineno}\n", label)
+            self.codegen.outputRuntimeReturnCheck(label)
         
+        self.codegen.outputLabel(retLabel)
         self.codegen.outputFunctionPostamble(stack)
 
 
@@ -47,28 +55,52 @@ class ProgramTraversal(AstTraversal):
         stackTraversal = StackTraversal(stack)
         stackTraversal.preorder(node)
 
+        retLabel = self.alloc.label.alloc()
+
         self.codegen.outputMainFunctionDeclaration()
         self.codegen.outputFunctionPreamble(stack, [])
         
-        traversal = BlockTraversal(self.codegen, self.alloc, stack)
+        traversal = FunctionBodyTraversal(self.codegen, self.alloc, stack, retLabel)
         traversal.preorder(node[3])
         
-        self.codegen.outputFunctionPostamble(stack)
-        self.codegen.outputMainExit()
+        self.codegen.outputLabel(retLabel)
+        self.codegen.outputMainExit(stack)
 
         self.prune()
 
 
-class BlockTraversal(AstTraversal):
-    def __init__(self, codegen: Codegen, alloc: AllocatorBundle, stack: StackAllocator):
+class FunctionBodyTraversal(AstTraversal):
+    def __init__(self, codegen: Codegen, alloc: AllocatorBundle, stack: StackAllocator, retLabel: int):
         self.codegen = codegen
         self.alloc = alloc 
         self.stack = stack
+        self.retLabel = retLabel
 
     def n_exprStmt(self, node: Ast):
         traversal = ExpressionTraversal(self.codegen, self.alloc, self.stack)
-        traversal.postorder(node)
+        traversal.preorder(node)
+
+        self.alloc.register.free(node[0].reg)
+
+
         self.prune()
+
+    def n_returnStmt(self, node: Ast):
+        if len(node) > 0:
+            traversal = ExpressionTraversal(self.codegen, self.alloc, self.stack)
+            traversal.preorder(node[0])
+
+            self.alloc.register.free(node[0].reg)
+
+            self.codegen.outputMove("v0", node[0].reg)
+        else:
+            pass 
+
+        self.codegen.outputJump(self.retLabel)
+
+        self.prune()
+
+
 
 
 class ExpressionTraversal(AstTraversal):
@@ -78,7 +110,7 @@ class ExpressionTraversal(AstTraversal):
         self.alloc = alloc
         self.stack = stack
 
-    def n_string(self, node: Ast):
+    def n_string_exit(self, node: Ast):
         label = self.alloc.label.alloc()
         register = self.alloc.register.alloc()
         string = bytes(node.attr[1:-1], "utf-8").decode("unicode_escape")
@@ -86,12 +118,12 @@ class ExpressionTraversal(AstTraversal):
         self.codegen.outputLoadAddress(register, label)
         node.reg = register
 
-    def n_number(self, node: Ast):
+    def n_number_exit(self, node: Ast):
         register = self.alloc.register.alloc()
         self.codegen.outputLoadIntegerImm(register, node.attr)
         node.reg = register
 
-    def n_ADD(self, node: Ast):
+    def n_ADD_exit(self, node: Ast):
         left = node[0].reg
         right = node[1].reg
 
@@ -104,6 +136,9 @@ class ExpressionTraversal(AstTraversal):
         node.reg = register
 
     def n_funcCall(self, node: Ast):
+        traversal = ExpressionTraversal(self.codegen, self.alloc, self.stack)
+        traversal.preorder(node[1])
+
         actuals = node[1]
 
         params = []
@@ -111,9 +146,17 @@ class ExpressionTraversal(AstTraversal):
             params.append(child.reg)
             self.alloc.register.free(child.reg)
 
+        self.codegen.outputSaveRegisters(self.alloc.register)
         self.codegen.outputCallFunction(params, node[0].sym)
+        self.codegen.outputRestoreRegisters(self.alloc.register)
 
-    def n_id(self, node: Ast):
+        register = self.alloc.register.alloc()
+        node.reg = register
+        self.codegen.outputMove(register, "v0")
+
+        self.prune()
+
+    def n_id_exit(self, node: Ast):
         sym = node.sym
 
         if not self.stack.defined(sym):
@@ -128,6 +171,22 @@ class ExpressionTraversal(AstTraversal):
         self.codegen.outputLoadIntegerStack(register, offset)
 
         node.reg = register
+
+    def n_ASSIGN(self, node: Ast):
+        traversal = ExpressionTraversal(self.codegen, self.alloc, self.stack)
+        traversal.preorder(node[1])
+
+        register = node[1].reg
+        sym = node[0].sym
+
+        if self.stack.defined(sym):
+            self.codegen.outputStoreRegisterStack(register, self.stack.location(sym))
+        else:
+            self.codegen.outputStoreRegisterAddress(register, sym)
+
+        node.reg = register
+
+        self.prune()
 
 class StackTraversal(AstTraversal):
     """
