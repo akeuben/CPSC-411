@@ -1,0 +1,15 @@
+// scope check, should print 12345false
+
+int i;
+
+void bar() {
+	i = 12345;
+}
+
+foo() {
+	bar();
+	printi(i);
+	boolean i;
+	i = false;
+	printb(i);
+}

@@ -1,0 +1,12 @@
+// Booleans and negation
+
+main() {
+	printc(79);
+
+        if (false != !true)
+                prints("ops!");
+        else
+                prints("K");
+
+	printc(10);
+}

@@ -5,7 +5,7 @@ import sys
 import difflib
 
 def usage():
-    print(f"Usage: {sys.argv[0]} lex|parse <executable path> <test dir|test>") 
+    print(f"Usage: {sys.argv[0]} lex|parse|sem|codegen <executable path> <test dir|test>") 
     sys.exit(1)
 
 def main():

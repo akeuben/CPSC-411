@@ -1,0 +1,9 @@
+// Used to break compiler with MIPS backend due to >4 arguments..
+
+void f(int a, int b, int c, int d, int e)
+{
+}
+
+main() {
+  f(1,2,3,4,5);
+}

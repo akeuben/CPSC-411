@@ -1,0 +1,18 @@
+// recursion *and* I/O - fun!
+
+void reverse() {
+	int c;
+
+	c = getchar();
+	if (c != NL) {
+		reverse();
+		printc(c);
+	}
+}
+
+int NL;
+
+main() {
+	NL = 10;
+	reverse();
+}

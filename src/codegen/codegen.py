@@ -29,7 +29,7 @@ class Codegen():
         pass
 
     @abstractmethod
-    def outputGlobalVariableDeclaration(self, varType: Type):
+    def outputGlobalVariableDeclaration(self, label: str):
         pass
 
     @abstractmethod
@@ -66,6 +66,10 @@ class Codegen():
 
     @abstractmethod
     def outputLoadIntegerImm(self, register: str, value: str):
+        pass
+
+    @abstractmethod 
+    def outputLoadIntegerAddress(self, register: str, label: str):
         pass
 
     @abstractmethod

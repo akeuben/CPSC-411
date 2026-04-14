@@ -1,0 +1,15 @@
+// a less-obvious division by zero, also caught at run-time
+
+int j;
+
+main() {
+	j = 12;
+	foo();
+	printi(j / (i - 2));
+}
+
+int i;
+
+void foo() {
+	i = 2;
+}

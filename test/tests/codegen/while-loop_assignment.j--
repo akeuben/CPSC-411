@@ -1,0 +1,9 @@
+// assignment in while loop condition
+
+main() {
+	int i;
+
+	while ((i = getchar()) != -1) {
+		printc(i);
+	}
+}

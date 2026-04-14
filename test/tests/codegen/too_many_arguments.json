@@ -1,0 +1,6 @@
+{
+  "stdout": "",
+  "stderr": "error: MIPS functions can't have > 4 arguments at or near line 3",
+  "path": "",
+  "exit_code": 1
+}

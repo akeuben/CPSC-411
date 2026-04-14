@@ -1,0 +1,5 @@
+// echo a single char
+
+main() {
+	printc(getchar());
+}

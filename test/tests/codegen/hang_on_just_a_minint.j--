@@ -1,0 +1,12 @@
+// more fun with the (32-bit) minint edge case
+
+void nl() {
+	prints("\n");
+}
+
+main() {
+	printi(-123);		nl();
+	printi(-2147483648);	nl();	// all these three should be minint
+	printi(--2147483648);	nl();
+	printi(---2147483648);	nl();
+}

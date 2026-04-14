@@ -1,0 +1,11 @@
+// run-time check for not reaching a return for non-void function
+
+int foo(int x) {
+	if (x * x < 0) {
+		return 123;
+	}
+}
+
+main() {
+	foo(-1);
+}

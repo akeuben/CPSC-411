@@ -35,6 +35,10 @@ class MipsCodegen(Codegen):
         self.switchMode(AsmMode.TEXT)
         print(f"{sym}:")
 
+    def outputGlobalVariableDeclaration(self, label: str):
+        self.switchMode(AsmMode.DATA)
+        print(f"{label}: .word 0");
+
     def outputFunctionPreamble(self, stackInfo: StackAllocator, formals: List[str]):
         self.switchMode(AsmMode.TEXT)
         size = stackInfo.size()
@@ -113,6 +117,10 @@ class MipsCodegen(Codegen):
         self.switchMode(AsmMode.TEXT)
         print(f"\tlw ${register}, {offset}($sp)")
 
+    def outputLoadIntegerAddress(self, register: str, label: str):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tlw ${register}, {label}")
+
     def outputLoadByteImm(self, register: str, value: str):
         self.switchMode(AsmMode.TEXT)
         print(f"\tlb ${register}, {value}")
@@ -131,11 +139,11 @@ class MipsCodegen(Codegen):
 
     def outputAdd(self, registerResult: str, registerA: str, registerB: str):
         self.switchMode(AsmMode.TEXT)
-        print(f"\tadd ${registerResult}, ${registerA}, ${registerB}")
+        print(f"\taddu ${registerResult}, ${registerA}, ${registerB}")
 
     def outputSub(self, registerResult: str, registerA: str, registerB: str):
         self.switchMode(AsmMode.TEXT)
-        print(f"\tsub ${registerResult}, ${registerA}, ${registerB}")
+        print(f"\tsubu ${registerResult}, ${registerA}, ${registerB}")
 
     def outputMul(self, registerResult: str, registerA: str, registerB: str):
         self.switchMode(AsmMode.TEXT)
@@ -193,9 +201,9 @@ class MipsCodegen(Codegen):
         print(f"\tbeq ${src}, $zero, L{l1}")
         print(f"\tli ${dst}, 0")
         print(f"\tb L{l2}")
-        self.outputLabel(l1)
+        super().outputLabel(l1)
         print(f"\tli ${dst}, 1")
-        self.outputLabel(l2)
+        super().outputLabel(l2)
 
     def outputJumpEqual(self, a: str, b: str, label: int):
         self.switchMode(AsmMode.TEXT)

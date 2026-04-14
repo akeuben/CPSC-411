@@ -1,0 +1,29 @@
+// test Boolean output and access
+//
+// false ? false false
+// true ? true false
+// true ? true true
+
+boolean b1;
+
+void foo(boolean a, boolean b) {
+	boolean b2;
+	printb(b1);
+	prints(" ");
+	printb(b2);	// should be local now
+	prints(" ");
+	printb(a);
+	prints(" ");
+	printb(b);
+	prints("\n");
+}
+
+main() {
+	foo(b1, b2);
+	b1 = true;
+	foo(b1, b2);
+	b2 = true;
+	foo(b1, b2);
+}
+
+boolean b2;

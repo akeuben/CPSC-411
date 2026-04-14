@@ -1,0 +1,6 @@
+{
+  "stdout": "Loaded: /home/profs/aycock/411/sw/share/spim/exceptions.s\n0 = \n\t0 (base 2)\n\t0 (base 8)\n\t0 (base 10)\n17 = \n\t010001 (base 2)\n\t021 (base 8)\n\t017 (base 10)\n42 = \n\t0101010 (base 2)\n\t052 (base 8)\n\t042 (base 10)",
+  "stderr": "",
+  "path": "",
+  "exit_code": 0
+}

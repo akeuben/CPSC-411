@@ -1,0 +1,14 @@
+// discourage incorrectly defining "for" as a keyword
+
+phore() {
+	printi(for(4));
+}
+
+int for(int fore) {
+	int four;
+	four = 4;
+	fore = four + fore;
+	int for;
+	for = fore;
+	return 11 * for;
+}

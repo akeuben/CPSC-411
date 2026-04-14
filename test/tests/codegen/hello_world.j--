@@ -1,0 +1,5 @@
+// the classic first program
+
+main() {
+	prints("Hello, world!\n");
+}

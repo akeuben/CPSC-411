@@ -1,3 +1,4 @@
+from typing import List
 from src.core.logging import logWarning
 from src.codegen.codegen import Codegen
 from src.codegen.allocator import AllocatorBundle, StackAllocator
@@ -37,7 +38,7 @@ class ProgramTraversal(AstTraversal):
         self.codegen.outputFunctionDeclaration(node[1].sym)
         self.codegen.outputFunctionPreamble(stack, formals)
         
-        traversal = FunctionBodyTraversal(self.codegen, self.alloc, stack, retLabel)
+        traversal = FunctionBodyTraversal(self.codegen, self.alloc, stack, retLabel, [])
         traversal.preorder(node[3])
 
         if node[0].sig != TypeVoid():
@@ -60,7 +61,7 @@ class ProgramTraversal(AstTraversal):
         self.codegen.outputMainFunctionDeclaration()
         self.codegen.outputFunctionPreamble(stack, [])
         
-        traversal = FunctionBodyTraversal(self.codegen, self.alloc, stack, retLabel)
+        traversal = FunctionBodyTraversal(self.codegen, self.alloc, stack, retLabel, [])
         traversal.preorder(node[3])
         
         self.codegen.outputLabel(retLabel)
@@ -68,13 +69,17 @@ class ProgramTraversal(AstTraversal):
 
         self.prune()
 
+    def n_globVarDecl(self, node: Ast):
+        self.codegen.outputGlobalVariableDeclaration(node[1].sym)
+
 
 class FunctionBodyTraversal(AstTraversal):
-    def __init__(self, codegen: Codegen, alloc: AllocatorBundle, stack: StackAllocator, retLabel: int):
+    def __init__(self, codegen: Codegen, alloc: AllocatorBundle, stack: StackAllocator, retLabel: int, whileBreakStack: List[int]):
         self.codegen = codegen
         self.alloc = alloc 
         self.stack = stack
         self.retLabel = retLabel
+        self.whileBreakStack = whileBreakStack
 
     def n_exprStmt(self, node: Ast):
         traversal = ExpressionTraversal(self.codegen, self.alloc, self.stack)
@@ -111,13 +116,13 @@ class FunctionBodyTraversal(AstTraversal):
 
         self.codegen.outputJumpZero(register, labelElse)
 
-        traversal = FunctionBodyTraversal(self.codegen, self.alloc, self.stack, self.retLabel)
+        traversal = FunctionBodyTraversal(self.codegen, self.alloc, self.stack, self.retLabel, self.whileBreakStack)
         traversal.preorder(node[1])
 
         self.codegen.outputJump(labelEnd)
         self.codegen.outputLabel(labelElse)
 
-        traversal = FunctionBodyTraversal(self.codegen, self.alloc, self.stack, self.retLabel)
+        traversal = FunctionBodyTraversal(self.codegen, self.alloc, self.stack, self.retLabel, self.whileBreakStack)
         traversal.preorder(node[2])
 
         self.codegen.outputLabel(labelEnd)
@@ -135,7 +140,7 @@ class FunctionBodyTraversal(AstTraversal):
 
         self.codegen.outputJumpZero(register, label)
 
-        traversal = FunctionBodyTraversal(self.codegen, self.alloc, self.stack, self.retLabel)
+        traversal = FunctionBodyTraversal(self.codegen, self.alloc, self.stack, self.retLabel, self.whileBreakStack)
         traversal.preorder(node[1])
 
         self.codegen.outputLabel(label)
@@ -145,12 +150,15 @@ class FunctionBodyTraversal(AstTraversal):
     def n_whileStmt(self, node: Ast):
         conditionLabel = self.alloc.label.alloc()
         loopLabel = self.alloc.label.alloc()
+        breakLabel = self.alloc.label.alloc()
 
         self.codegen.outputJump(conditionLabel)
 
         self.codegen.outputLabel(loopLabel)
-        traversal = FunctionBodyTraversal(self.codegen, self.alloc, self.stack, self.retLabel)
+        self.whileBreakStack.append(breakLabel)
+        traversal = FunctionBodyTraversal(self.codegen, self.alloc, self.stack, self.retLabel, self.whileBreakStack)
         traversal.preorder(node[1])
+        self.whileBreakStack.pop()
 
         self.codegen.outputLabel(conditionLabel)
         traversal = ExpressionTraversal(self.codegen, self.alloc, self.stack)
@@ -160,9 +168,14 @@ class FunctionBodyTraversal(AstTraversal):
         self.alloc.register.free(register)
 
         self.codegen.outputJumpNotZero(register, loopLabel)
+        self.codegen.outputLabel(breakLabel)
 
         self.prune()
         
+    def n_breakStmt(self, _: Ast):
+        self.codegen.outputJump(self.whileBreakStack[-1])
+
+        self.prune()
 
 
 class ExpressionTraversal(AstTraversal):
@@ -269,16 +282,13 @@ class ExpressionTraversal(AstTraversal):
     def n_id_exit(self, node: Ast):
         sym = node.sym
 
-        if not self.stack.defined(sym):
-            # Then this is not a local variable node, is instead 
-            # a function call id 
-            return
-        
-        offset = self.stack.location(sym)
-        
         register = self.alloc.register.alloc()
 
-        self.codegen.outputLoadIntegerStack(register, offset)
+        if not self.stack.defined(sym):
+            self.codegen.outputLoadIntegerAddress(register, sym)
+        else:       
+            offset = self.stack.location(sym)
+            self.codegen.outputLoadIntegerStack(register, offset)
 
         node.reg = register
 
