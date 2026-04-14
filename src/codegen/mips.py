@@ -188,7 +188,9 @@ class MipsCodegen(Codegen):
         self.switchMode(AsmMode.TEXT)
         print(f"\tla $a0, L{msgLabel}")
         print("\tjal sym1")
-        print("\tjal sym6")
+        print("\tli $v0, 17")
+        print("\tli $a0, 1")
+        print("\tsyscall")
 
     def outputJumpNotZero(self, register: str, label: int):
         self.switchMode(AsmMode.TEXT)

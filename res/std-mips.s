@@ -23,7 +23,9 @@ DMC5:
 	la $s5, DMC5
 	move $a0, $s5
 	jal sym1
-	move $s5, $v0
+    li $v0, 17
+    li $a0, 1 
+    syscall
 DMC2:
 	lw $s6, 4($sp)
 	li $s4, -2147483648
