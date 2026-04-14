@@ -2,7 +2,12 @@
 sym5:
 	li $v0, 12
 	syscall
+    li $t0, 10 
+    beq $v0, $t0, STDL0
 	jr $ra
+STDL0:
+    li $v0, -1 
+    jr $ra
 
 sym6:
 	li $v0, 10
