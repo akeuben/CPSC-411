@@ -174,9 +174,6 @@ class MipsCodegen(Codegen):
         for i in range(len(paramRegisters)):
             param = paramRegisters[i]
 
-            if i >= 4:
-                logError("Too many function parameters! Maximum is for for the mips target.")
-
             print(f"\tmove $a{i}, ${param}")
         print(f"\tjal {functionSym}")
 

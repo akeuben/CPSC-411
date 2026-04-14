@@ -1,5 +1,5 @@
 from typing import List
-from src.core.logging import logWarning
+from src.core.logging import logError, logWarning
 from src.codegen.codegen import Codegen
 from src.codegen.allocator import AllocatorBundle, StackAllocator
 from src.core.cpsc411 import *
@@ -35,6 +35,9 @@ class ProgramTraversal(AstTraversal):
             sym = child[1].sym
             formals.append(sym)
 
+        if len(formals) > 4:
+            logError("MIPS functions can't have > 4 arguments", node.lineno)
+
         self.codegen.outputFunctionDeclaration(node[1].sym)
         self.codegen.outputFunctionPreamble(stack, formals)
         
@@ -43,7 +46,7 @@ class ProgramTraversal(AstTraversal):
 
         if node[0].sig != TypeVoid():
             label = self.alloc.label.alloc()
-            self.codegen.outputStringLiteral(f"error: function {node[1].attr} must return a value at or near line {node[1].lineno}\n", label)
+            self.codegen.outputStringLiteral(f"function '{node[1].attr}' must return a value", label)
             self.codegen.outputRuntimeReturnCheck(label)
         
         self.codegen.outputLabel(retLabel)
