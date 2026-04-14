@@ -46,7 +46,7 @@ class ProgramTraversal(AstTraversal):
 
         if node[0].sig != TypeVoid():
             label = self.alloc.label.alloc()
-            self.codegen.outputStringLiteral(f"function '{node[1].attr}' must return a value", label)
+            self.codegen.outputStringLiteral(f"error: function '{node[1].attr}' must return a value", label)
             self.codegen.outputRuntimeReturnCheck(label)
         
         self.codegen.outputLabel(retLabel)
