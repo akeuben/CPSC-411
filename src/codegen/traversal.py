@@ -142,6 +142,29 @@ class FunctionBodyTraversal(AstTraversal):
 
         self.prune()
 
+    def n_whileStmt(self, node: Ast):
+        conditionLabel = self.alloc.label.alloc()
+        loopLabel = self.alloc.label.alloc()
+
+        self.codegen.outputJump(conditionLabel)
+
+        self.codegen.outputLabel(loopLabel)
+        traversal = FunctionBodyTraversal(self.codegen, self.alloc, self.stack, self.retLabel)
+        traversal.preorder(node[1])
+
+        self.codegen.outputLabel(conditionLabel)
+        traversal = ExpressionTraversal(self.codegen, self.alloc, self.stack)
+        traversal.preorder(node[0])
+        
+        register = node[0].reg
+        self.alloc.register.free(register)
+
+        self.codegen.outputJumpNotZero(register, loopLabel)
+
+        self.prune()
+        
+
+
 class ExpressionTraversal(AstTraversal):
 
     def __init__(self, codegen: Codegen, alloc: AllocatorBundle, stack: StackAllocator):
@@ -172,6 +195,54 @@ class ExpressionTraversal(AstTraversal):
         register = self.alloc.register.alloc()
 
         self.codegen.outputAdd(register, left, right)
+        node.reg = register
+
+    def n_SUB_exit(self, node: Ast):
+        left = node[0].reg
+        right = node[1].reg
+
+        self.alloc.register.free(right)
+        self.alloc.register.free(left)
+
+        register = self.alloc.register.alloc()
+
+        self.codegen.outputSub(register, left, right)
+        node.reg = register
+
+    def n_MUL_exit(self, node: Ast):
+        left = node[0].reg
+        right = node[1].reg
+
+        self.alloc.register.free(right)
+        self.alloc.register.free(left)
+
+        register = self.alloc.register.alloc()
+
+        self.codegen.outputMul(register, left, right)
+        node.reg = register
+
+    def n_DIV_exit(self, node: Ast):
+        left = node[0].reg
+        right = node[1].reg
+
+        self.alloc.register.free(right)
+        self.alloc.register.free(left)
+
+        register = self.alloc.register.alloc()
+
+        self.codegen.outputDiv(register, left, right)
+        node.reg = register
+
+    def n_MOD_exit(self, node: Ast):
+        left = node[0].reg
+        right = node[1].reg
+
+        self.alloc.register.free(right)
+        self.alloc.register.free(left)
+
+        register = self.alloc.register.alloc()
+
+        self.codegen.outputMod(register, left, right)
         node.reg = register
 
     def n_funcCall(self, node: Ast):
@@ -284,9 +355,125 @@ class ExpressionTraversal(AstTraversal):
         self.prune()
 
     def n_NOT_exit(self, node: Ast):
-        register = node[0].reg
+        paramRegister = node[0].reg
+        self.alloc.register.free(paramRegister)
+        register = self.alloc.register.alloc();
 
-        self.codegen.outputNot(register, register)
+        self.codegen.outputNot(paramRegister, register, self.alloc.label)
+
+        node.reg = register
+
+    def n_EQ_exit(self, node: Ast):
+        trueLabel = self.alloc.label.alloc()
+        exitLabel = self.alloc.label.alloc()
+        leftReg = node[0].reg
+        rightReg = node[1].reg
+
+        self.alloc.register.free(leftReg)
+        self.alloc.register.free(rightReg)
+        register = self.alloc.register.alloc()
+
+        self.codegen.outputJumpEqual(leftReg, rightReg, trueLabel)
+        self.codegen.outputLoadIntegerImm(register, "0")
+        self.codegen.outputJump(exitLabel)
+        self.codegen.outputLabel(trueLabel)
+        self.codegen.outputLoadIntegerImm(register, "1")
+        self.codegen.outputLabel(exitLabel)
+
+        node.reg = register
+
+    def n_NE_exit(self, node: Ast):
+        trueLabel = self.alloc.label.alloc()
+        exitLabel = self.alloc.label.alloc()
+        leftReg = node[0].reg
+        rightReg = node[1].reg
+
+        self.alloc.register.free(leftReg)
+        self.alloc.register.free(rightReg)
+        register = self.alloc.register.alloc()
+
+        self.codegen.outputJumpNotEqual(leftReg, rightReg, trueLabel)
+        self.codegen.outputLoadIntegerImm(register, "0")
+        self.codegen.outputJump(exitLabel)
+        self.codegen.outputLabel(trueLabel)
+        self.codegen.outputLoadIntegerImm(register, "1")
+        self.codegen.outputLabel(exitLabel)
+
+        node.reg = register
+
+    def n_GT_exit(self, node: Ast):
+        trueLabel = self.alloc.label.alloc()
+        exitLabel = self.alloc.label.alloc()
+        leftReg = node[0].reg
+        rightReg = node[1].reg
+
+        self.alloc.register.free(leftReg)
+        self.alloc.register.free(rightReg)
+        register = self.alloc.register.alloc()
+
+        self.codegen.outputJumpGreaterThan(leftReg, rightReg, trueLabel)
+        self.codegen.outputLoadIntegerImm(register, "0")
+        self.codegen.outputJump(exitLabel)
+        self.codegen.outputLabel(trueLabel)
+        self.codegen.outputLoadIntegerImm(register, "1")
+        self.codegen.outputLabel(exitLabel)
+
+        node.reg = register
+
+    def n_GE_exit(self, node: Ast):
+        trueLabel = self.alloc.label.alloc()
+        exitLabel = self.alloc.label.alloc()
+        leftReg = node[0].reg
+        rightReg = node[1].reg
+
+        self.alloc.register.free(leftReg)
+        self.alloc.register.free(rightReg)
+        register = self.alloc.register.alloc()
+
+        self.codegen.outputJumpGreaterThanOrEqual(leftReg, rightReg, trueLabel)
+        self.codegen.outputLoadIntegerImm(register, "0")
+        self.codegen.outputJump(exitLabel)
+        self.codegen.outputLabel(trueLabel)
+        self.codegen.outputLoadIntegerImm(register, "1")
+        self.codegen.outputLabel(exitLabel)
+
+        node.reg = register
+
+    def n_LT_exit(self, node: Ast):
+        trueLabel = self.alloc.label.alloc()
+        exitLabel = self.alloc.label.alloc()
+        leftReg = node[0].reg
+        rightReg = node[1].reg
+
+        self.alloc.register.free(leftReg)
+        self.alloc.register.free(rightReg)
+        register = self.alloc.register.alloc()
+
+        self.codegen.outputJumpLessThan(leftReg, rightReg, trueLabel)
+        self.codegen.outputLoadIntegerImm(register, "0")
+        self.codegen.outputJump(exitLabel)
+        self.codegen.outputLabel(trueLabel)
+        self.codegen.outputLoadIntegerImm(register, "1")
+        self.codegen.outputLabel(exitLabel)
+
+        node.reg = register
+
+    def n_LE_exit(self, node: Ast):
+        trueLabel = self.alloc.label.alloc()
+        exitLabel = self.alloc.label.alloc()
+        leftReg = node[0].reg
+        rightReg = node[1].reg
+
+        self.alloc.register.free(leftReg)
+        self.alloc.register.free(rightReg)
+        register = self.alloc.register.alloc()
+
+        self.codegen.outputJumpLessThanOrEqual(leftReg, rightReg, trueLabel)
+        self.codegen.outputLoadIntegerImm(register, "0")
+        self.codegen.outputJump(exitLabel)
+        self.codegen.outputLabel(trueLabel)
+        self.codegen.outputLoadIntegerImm(register, "1")
+        self.codegen.outputLabel(exitLabel)
 
         node.reg = register
 

@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from typing import List
-from src.codegen.allocator import RegisterAllocator, StackAllocator
+from src.codegen.allocator import LabelAllocator, RegisterAllocator, StackAllocator
 from src.semantics.symbol_table import SymbolTable
 from src.semantics.types import Type
 
@@ -88,6 +88,22 @@ class Codegen():
     def outputAdd(self, registerResult: str, registerA: str, registerB: str):
         pass
 
+    @abstractmethod
+    def outputSub(self, registerResult: str, registerA: str, registerB: str):
+        pass
+
+    @abstractmethod
+    def outputMul(self, registerResult: str, registerA: str, registerB: str):
+        pass
+
+    @abstractmethod
+    def outputDiv(self, registerResult: str, registerA: str, registerB: str):
+        pass
+
+    @abstractmethod
+    def outputMod(self, registerResult: str, registerA: str, registerB: str):
+        pass
+
     @abstractmethod 
     def outputCallFunction(self, paramRegisters: List[str], functionSym: str):
         pass
@@ -113,5 +129,29 @@ class Codegen():
         pass
 
     @abstractmethod
-    def outputNot(self, dst: str, src: str):
+    def outputNot(self, dst: str, src: str, labelAlloc: LabelAllocator):
+        pass
+
+    @abstractmethod 
+    def outputJumpEqual(self, a: str, b: str, label: int):
+        pass
+
+    @abstractmethod 
+    def outputJumpNotEqual(self, a: str, b: str, label: int):
+        pass
+
+    @abstractmethod 
+    def outputJumpGreaterThan(self, a: str, b: str, label: int):
+        pass
+
+    @abstractmethod 
+    def outputJumpLessThan(self, a: str, b: str, label: int):
+        pass
+
+    @abstractmethod 
+    def outputJumpGreaterThanOrEqual(self, a: str, b: str, label: int):
+        pass
+
+    @abstractmethod 
+    def outputJumpLessThanOrEqual(self, a: str, b: str, label: int):
         pass

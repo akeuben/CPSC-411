@@ -1,6 +1,6 @@
 from typing import List
 from src.core.logging import logError
-from src.codegen.allocator import RegisterAllocator, StackAllocator
+from src.codegen.allocator import LabelAllocator, RegisterAllocator, StackAllocator
 from src.codegen.codegen import Codegen
 from enum import Enum
 
@@ -66,11 +66,13 @@ class MipsCodegen(Codegen):
         if size == 0:
             return
 
+        print("# save registers")
         print(f"\taddi $sp, $sp, -{size}")
         offset = 0
         for reg in allocated:
             print(f"\tsw ${reg}, {offset}($sp)")
             offset += 4
+        print("# save registers")
 
     def outputRestoreRegisters(self, alloc: RegisterAllocator):
         self.switchMode(AsmMode.TEXT)
@@ -80,11 +82,13 @@ class MipsCodegen(Codegen):
         if size == 0:
             return
 
-        print(f"\taddi $sp, $sp, {size}")
+        print("# restore registers")
         offset = 0
         for reg in allocated:
             print(f"\tlw ${reg}, {offset}($sp)")
             offset += 4
+        print(f"\taddi $sp, $sp, {size}")
+        print("# restore registers")
 
 
     def outputMainExit(self, stack: StackAllocator):
@@ -129,6 +133,25 @@ class MipsCodegen(Codegen):
         self.switchMode(AsmMode.TEXT)
         print(f"\tadd ${registerResult}, ${registerA}, ${registerB}")
 
+    def outputSub(self, registerResult: str, registerA: str, registerB: str):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tsub ${registerResult}, ${registerA}, ${registerB}")
+
+    def outputMul(self, registerResult: str, registerA: str, registerB: str):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tmult ${registerA}, ${registerB}")
+        print(f"\tmflo ${registerResult}")
+
+    def outputDiv(self, registerResult: str, registerA: str, registerB: str):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tdiv ${registerA}, ${registerB}")
+        print(f"\tmflo ${registerResult}")
+
+    def outputMod(self, registerResult: str, registerA: str, registerB: str):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tdiv ${registerA}, ${registerB}")
+        print(f"\tmfhi ${registerResult}")
+
     def outputCallFunction(self, paramRegisters: List[str], functionSym: str):
         self.switchMode(AsmMode.TEXT)
 
@@ -163,6 +186,37 @@ class MipsCodegen(Codegen):
         self.switchMode(AsmMode.TEXT)
         print(f"\tbeq ${register}, $zero, L{label}")
 
-    def outputNot(self, dst: str, src: str):
+    def outputNot(self, dst: str, src: str, labelAlloc: LabelAllocator):
         self.switchMode(AsmMode.TEXT)
-        print(f"\tnor ${dst}, ${src}, ${src}")
+        l1 = labelAlloc.alloc()
+        l2 = labelAlloc.alloc()
+        print(f"\tbeq ${src}, $zero, L{l1}")
+        print(f"\tli ${dst}, 0")
+        print(f"\tb L{l2}")
+        self.outputLabel(l1)
+        print(f"\tli ${dst}, 1")
+        self.outputLabel(l2)
+
+    def outputJumpEqual(self, a: str, b: str, label: int):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tbeq ${a}, ${b}, L{label}")
+
+    def outputJumpNotEqual(self, a: str, b: str, label: int):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tbne ${a}, ${b}, L{label}")
+
+    def outputJumpGreaterThan(self, a: str, b: str, label: int):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tbgt ${a}, ${b}, L{label}")
+
+    def outputJumpGreaterThanOrEqual(self, a: str, b: str, label: int):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tbge ${a}, ${b}, L{label}")
+
+    def outputJumpLessThan(self, a: str, b: str, label: int):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tblt ${a}, ${b}, L{label}")
+
+    def outputJumpLessThanOrEqual(self, a: str, b: str, label: int):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tble ${a}, ${b}, L{label}")
