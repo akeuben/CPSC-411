@@ -97,6 +97,10 @@ class Codegen():
         pass
 
     @abstractmethod
+    def outputNegate(self, registerResult: str, registerA: str):
+        pass
+
+    @abstractmethod
     def outputMul(self, registerResult: str, registerA: str, registerB: str):
         pass
 

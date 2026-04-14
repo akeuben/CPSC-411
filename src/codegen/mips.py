@@ -145,6 +145,10 @@ class MipsCodegen(Codegen):
         self.switchMode(AsmMode.TEXT)
         print(f"\tsubu ${registerResult}, ${registerA}, ${registerB}")
 
+    def outputNegate(self, registerResult: str, registerA: str):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tsubu ${registerResult}, $zero, ${registerA}")
+
     def outputMul(self, registerResult: str, registerA: str, registerB: str):
         self.switchMode(AsmMode.TEXT)
         print(f"\tmult ${registerA}, ${registerB}")

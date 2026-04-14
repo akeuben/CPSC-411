@@ -222,6 +222,16 @@ class ExpressionTraversal(AstTraversal):
         self.codegen.outputSub(register, left, right)
         node.reg = register
 
+    def n_UMINUS_exit(self, node: Ast):
+        paramReg = node[0].reg 
+
+        self.alloc.register.free(paramReg)
+
+        register = self.alloc.register.alloc()
+
+        self.codegen.outputNegate(register, paramReg)
+        node.reg = register
+
     def n_MUL_exit(self, node: Ast):
         left = node[0].reg
         right = node[1].reg
