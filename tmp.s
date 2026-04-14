@@ -599,7 +599,13 @@ L66:
 	li $s6, 0
 	sw $s6, 4($sp)
 	j L67
+    nop
+    nop
+    nop
 L68:
+    nop
+    nop
+    nop
     li $v0, 1
     li $a0, 20003
     syscall

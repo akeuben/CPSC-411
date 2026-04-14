@@ -133,7 +133,7 @@ class Codegen():
         pass
 
     @abstractmethod
-    def outputJumpNotZero(self, register: str, label: int):
+    def outputJumpNotZero(self, register: str, label: int, labelAlloc: LabelAllocator):
         pass
 
     @abstractmethod

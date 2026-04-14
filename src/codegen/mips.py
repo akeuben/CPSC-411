@@ -192,9 +192,15 @@ class MipsCodegen(Codegen):
         print("\tli $a0, 1")
         print("\tsyscall")
 
-    def outputJumpNotZero(self, register: str, label: int):
+    def outputJumpNotZero(self, register: str, label: int, labelAlloc: LabelAllocator):
         self.switchMode(AsmMode.TEXT)
-        print(f"\tbne ${register}, $zero, L{label}")
+        skipLabel = labelAlloc.alloc()
+        # We use a jump instead of a bne directly in case of a large loop.
+        # jumps have 26 bits for the offset, while beq only has 16. This 
+        # fails for the selection sort test.
+        print(f"beq ${register}, $zero, L{skipLabel}")
+        print(f"j L{label}")
+        super().outputLabel(skipLabel)
 
     def outputJumpZero(self, register: str, label: int):
         self.switchMode(AsmMode.TEXT)

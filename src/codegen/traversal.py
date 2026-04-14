@@ -170,7 +170,7 @@ class FunctionBodyTraversal(AstTraversal):
         register = node[0].reg
         self.alloc.register.free(register)
 
-        self.codegen.outputJumpNotZero(register, loopLabel)
+        self.codegen.outputJumpNotZero(register, loopLabel, self.alloc.label)
         self.codegen.outputLabel(breakLabel)
 
         self.prune()
@@ -367,7 +367,7 @@ class ExpressionTraversal(AstTraversal):
         register = self.alloc.register.alloc()
 
         self.codegen.outputMove(register, leftRegister)
-        self.codegen.outputJumpNotZero(register, rightLabel)
+        self.codegen.outputJumpNotZero(register, rightLabel, self.alloc.label)
 
         traversal.preorder(node[1])
         rightRegister = node[1].reg 
