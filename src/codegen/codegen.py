@@ -101,6 +101,10 @@ class Codegen():
         pass
 
     @abstractmethod
+    def outputDivCheck(self, register: str):
+        pass
+
+    @abstractmethod
     def outputMul(self, registerResult: str, registerA: str, registerB: str):
         pass
 

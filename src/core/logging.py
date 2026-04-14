@@ -25,7 +25,7 @@ def logToken(type: str, line: int, attr: str) -> None:
     print(f"{type} @ line {line}, attr {attr}")
 
 def logUsage(cmd):
-    print(f"Usage: python3 {cmd} file.j--", file=sys.stderr)
+    print(f"usage: python3 {cmd} file.j--", file=sys.stderr)
     sys.exit(1)
 
 def logUnknownFile(path):

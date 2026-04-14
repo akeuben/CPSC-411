@@ -253,6 +253,7 @@ class ExpressionTraversal(AstTraversal):
 
         register = self.alloc.register.alloc()
 
+        self.codegen.outputDivCheck(right)
         self.codegen.outputDiv(register, left, right)
         node.reg = register
 
@@ -265,6 +266,7 @@ class ExpressionTraversal(AstTraversal):
 
         register = self.alloc.register.alloc()
 
+        self.codegen.outputDivCheck(right)
         self.codegen.outputMod(register, left, right)
         node.reg = register
 

@@ -1,4 +1,15 @@
+.data 
+divzeromsg: 
+    .byte 24 
+    .ascii "error: division by zero\n"
+
 .text
+handledivzero:
+    la $a0, divzeromsg
+    jal sym1
+    jal sym6
+    jr $ra
+
 sym5:
 	li $v0, 12
 	syscall

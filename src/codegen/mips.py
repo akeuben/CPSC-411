@@ -154,6 +154,10 @@ class MipsCodegen(Codegen):
         print(f"\tmult ${registerA}, ${registerB}")
         print(f"\tmflo ${registerResult}")
 
+    def outputDivCheck(self, register: str):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tbeq ${register}, $zero, handledivzero")
+
     def outputDiv(self, registerResult: str, registerA: str, registerB: str):
         self.switchMode(AsmMode.TEXT)
         print(f"\tdiv ${registerA}, ${registerB}")
