@@ -82,7 +82,6 @@ class FunctionBodyTraversal(AstTraversal):
 
         self.alloc.register.free(node[0].reg)
 
-
         self.prune()
 
     def n_returnStmt(self, node: Ast):
@@ -99,9 +98,6 @@ class FunctionBodyTraversal(AstTraversal):
         self.codegen.outputJump(self.retLabel)
 
         self.prune()
-
-
-
 
 class ExpressionTraversal(AstTraversal):
 
@@ -187,6 +183,69 @@ class ExpressionTraversal(AstTraversal):
         node.reg = register
 
         self.prune()
+
+    def n_true_exit(self, node: Ast):
+        register = self.alloc.register.alloc()
+        self.codegen.outputLoadIntegerImm(register, "1")
+        node.reg = register
+
+    def n_false_exit(self, node: Ast):
+        register = self.alloc.register.alloc()
+        self.codegen.outputLoadIntegerImm(register, "0")
+        node.reg = register
+
+    def n_AND(self, node: Ast):
+        register = self.alloc.register.alloc()
+        rightLabel = self.alloc.label.alloc()
+        # Traverse left 
+        traversal = ExpressionTraversal(self.codegen, self.alloc, self.stack)
+        traversal.preorder(node[0])
+        leftRegister = node[0].reg 
+        self.alloc.register.free(leftRegister)
+
+        self.codegen.outputMove(register, leftRegister)
+        self.codegen.outputJumpZero(register, rightLabel)
+
+        traversal.preorder(node[1])
+        rightRegister = node[1].reg 
+        self.alloc.register.free(rightRegister)
+
+        self.codegen.outputMove(register, rightRegister)
+        self.codegen.outputLabel(rightLabel)
+        
+        node.reg = register
+        self.prune()
+
+    def n_OR(self, node: Ast):
+        rightLabel = self.alloc.label.alloc()
+        # Traverse left 
+        traversal = ExpressionTraversal(self.codegen, self.alloc, self.stack)
+        traversal.preorder(node[0])
+
+        leftRegister = node[0].reg 
+        self.alloc.register.free(leftRegister)
+
+        register = self.alloc.register.alloc()
+
+        self.codegen.outputMove(register, leftRegister)
+        self.codegen.outputJumpNotZero(register, rightLabel)
+
+        traversal.preorder(node[1])
+        rightRegister = node[1].reg 
+        self.alloc.register.free(rightRegister)
+
+        self.codegen.outputMove(register, rightRegister)
+        self.codegen.outputLabel(rightLabel)
+        
+        node.reg = register
+        self.prune()
+
+    def n_NOT_exit(self, node: Ast):
+        register = node[0].reg
+
+        self.codegen.outputNot(register, register)
+
+        node.reg = register
 
 class StackTraversal(AstTraversal):
     """

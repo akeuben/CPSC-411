@@ -103,3 +103,15 @@ class Codegen():
     @abstractmethod
     def outputRuntimeReturnCheck(self, msgLabel: int):
         pass
+
+    @abstractmethod
+    def outputJumpNotZero(self, register: str, label: int):
+        pass
+
+    @abstractmethod
+    def outputJumpZero(self, register: str, label: int):
+        pass
+
+    @abstractmethod
+    def outputNot(self, dst: str, src: str):
+        pass

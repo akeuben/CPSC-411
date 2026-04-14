@@ -154,3 +154,15 @@ class MipsCodegen(Codegen):
         print(f"\tla $a0, L{msgLabel}")
         print("\tjal sym1")
         print("\tjal sym6")
+
+    def outputJumpNotZero(self, register: str, label: int):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tbne ${register}, $zero, L{label}")
+
+    def outputJumpZero(self, register: str, label: int):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tbeq ${register}, $zero, L{label}")
+
+    def outputNot(self, dst: str, src: str):
+        self.switchMode(AsmMode.TEXT)
+        print(f"\tnor ${dst}, ${src}, ${src}")
