@@ -600,9 +600,6 @@ L66:
 	sw $s6, 4($sp)
 	j L67
 L68:
-    li $v0, 1
-    li $a0, 20003
-    syscall
 .data
 L70:
 .byte 2, 65, 10
@@ -9874,12 +9871,9 @@ L2484:
 	li $s6, 1
 L2485:
     li $v0, 1
-    li $a0, 20001
+    li $a0, 12345678
     syscall
 	bne $s6, $zero, L68
-    li $v0, 1
-    li $a0, 20002
-    syscall
 L69:
 L1:
 	lw $ra, 0($sp)

@@ -1,4 +1,4 @@
-Run started on Tue Apr 14 01:58:54 2026
+Run started on Tue Apr 14 02:41:06 2026
 
 Hostname: csx2.uc.ucalgary.ca
 
@@ -522,7 +522,7 @@ RETURN CODE: 0
 
 STDOUT:
 Loaded: /home/profs/aycock/411/sw/share/spim/exceptions.s
-0
+-2147483648
 0
 
 
@@ -552,7 +552,7 @@ error: division by zero
 STDERR:
 
 
-RETURN CODE: 0
+RETURN CODE: 1
 
 -------------------------------------------------------------------------------
 Test: less obvious division by zero |
@@ -575,7 +575,7 @@ error: division by zero
 STDERR:
 
 
-RETURN CODE: 0
+RETURN CODE: 1
 
 -------------------------------------------------------------------------------
 Test: recursive-descent calculator |
@@ -684,7 +684,7 @@ Test: register blow-out |
 % /usr/bin/python3 main.py /home/profs/aycock/411/TEST/final/gen.t22 > out.s
 
 STDERR:
-error: No registers remaining!
+error: expression too complicated
 
 
 RETURN CODE: 1
@@ -845,12 +845,12 @@ RETURN CODE: 0
 
 STDOUT:
 Loaded: /home/profs/aycock/411/sw/share/spim/exceptions.s
-function 'foo' must return a value
+error: function 'foo' must return a value
 
 STDERR:
 
 
-RETURN CODE: 0
+RETURN CODE: 1
 
 -------------------------------------------------------------------------------
 Test: nested loops et al. |
@@ -1164,7 +1164,7 @@ Loaded: /home/profs/aycock/411/sw/share/spim/exceptions.s
 
 
 STDERR:
-Attempt to execute non-instruction at 0x004104f8
+Attempt to execute non-instruction at 0x004107c4
 
 
 RETURN CODE: 0
@@ -1301,5 +1301,5 @@ STDERR:
 
 RETURN CODE: 0
 
-Run ended on Tue Apr 14 01:59:32 2026
+Run ended on Tue Apr 14 02:41:44 2026
 
