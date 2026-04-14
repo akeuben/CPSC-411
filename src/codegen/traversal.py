@@ -257,7 +257,7 @@ class ExpressionTraversal(AstTraversal):
         register = self.alloc.register.alloc()
 
         self.codegen.outputDivCheck(right)
-        self.codegen.outputDiv(register, left, right)
+        self.codegen.outputDiv(register, left, right, self.alloc.register)
         node.reg = register
 
     def n_MOD_exit(self, node: Ast):
@@ -270,7 +270,7 @@ class ExpressionTraversal(AstTraversal):
         register = self.alloc.register.alloc()
 
         self.codegen.outputDivCheck(right)
-        self.codegen.outputMod(register, left, right)
+        self.codegen.outputMod(register, left, right, self.alloc.register)
         node.reg = register
 
     def n_funcCall(self, node: Ast):

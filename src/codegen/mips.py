@@ -152,19 +152,20 @@ class MipsCodegen(Codegen):
         print(f"\tmult ${registerA}, ${registerB}")
         print(f"\tmflo ${registerResult}")
 
-    def outputDivCheck(self, register: str):
+    def outputDiv(self, registerResult: str, registerA: str, registerB: str, registerAllocator: RegisterAllocator):
         self.switchMode(AsmMode.TEXT)
-        print(f"\tbeq ${register}, $zero, handledivzero")
+        self.outputSaveRegisters(registerAllocator)
+        self.outputCallFunction([registerA, registerB], "divmodchk")
+        self.outputRestoreRegisters(registerAllocator)
+        print(f"\tdiv ${registerResult}, ${registerA}, $v0")
 
-    def outputDiv(self, registerResult: str, registerA: str, registerB: str):
-        self.switchMode(AsmMode.TEXT)
-        print(f"\tdiv ${registerA}, ${registerB}")
-        print(f"\tmflo ${registerResult}")
 
-    def outputMod(self, registerResult: str, registerA: str, registerB: str):
+    def outputMod(self, registerResult: str, registerA: str, registerB: str, registerAllocator: RegisterAllocator):
         self.switchMode(AsmMode.TEXT)
-        print(f"\tdiv ${registerA}, ${registerB}")
-        print(f"\tmfhi ${registerResult}")
+        self.outputSaveRegisters(registerAllocator)
+        self.outputCallFunction([registerA, registerB], "divmodchk")
+        self.outputRestoreRegisters(registerAllocator)
+        print(f"\trem ${registerResult}, ${registerA}, $v0")
 
     def outputCallFunction(self, paramRegisters: List[str], functionSym: str):
         self.switchMode(AsmMode.TEXT)

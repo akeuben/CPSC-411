@@ -109,11 +109,11 @@ class Codegen():
         pass
 
     @abstractmethod
-    def outputDiv(self, registerResult: str, registerA: str, registerB: str):
+    def outputDiv(self, registerResult: str, registerA: str, registerB: str, registerAllocator: RegisterAllocator):
         pass
 
     @abstractmethod
-    def outputMod(self, registerResult: str, registerA: str, registerB: str):
+    def outputMod(self, registerResult: str, registerA: str, registerB: str, registerAllocator: RegisterAllocator):
         pass
 
     @abstractmethod 

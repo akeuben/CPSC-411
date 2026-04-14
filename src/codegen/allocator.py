@@ -24,7 +24,7 @@ class BasicMipsRegisterAllocator(RegisterAllocator):
 
     def alloc(self):
         if len(self.freeList) == 0:
-            logError("No registers remaining!")
+            logError("expression too complicated")
         reg = self.freeList.pop()
         self.usedList.append(reg)
         return reg
