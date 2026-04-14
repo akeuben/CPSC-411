@@ -1,6 +1,0 @@
-{
-  "stdout": "Loaded: /home/profs/aycock/411/sw/share/spim/exceptions.s\nglobal int default value: 0\nglobal boolean default value: false\n\n(it's ok if the following aren't 0/false)\n\tlocal int default value: 0\n\tlocal boolean default value: false\n\n(it's ok if the following aren't 0/false)\n\tlocal int default value: 123\n\tlocal boolean default value: true",
-  "stderr": "",
-  "path": "",
-  "exit_code": 0
-}

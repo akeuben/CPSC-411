@@ -1,6 +1,0 @@
-{
-  "stdout": "Loaded: /home/profs/aycock/411/sw/share/spim/exceptions.s\nbackslash b = [\b]\nbackslash t = [\t]\nbackslash n = [\n]\nbackslash f = [\f]\nbackslash r = [\n]\nbackslash single-quote = [']\nbackslash double-quote = [\"]\nbackslash backslash = [\\]\nNUL = [\u0000]",
-  "stderr": "",
-  "path": "",
-  "exit_code": 0
-}

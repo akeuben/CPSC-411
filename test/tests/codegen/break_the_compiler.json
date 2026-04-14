@@ -1,6 +1,0 @@
-{
-  "stdout": "Loaded: /home/profs/aycock/411/sw/share/spim/exceptions.s\ni is 0\n    should see this when i >= 0\n    should always see this\ni is 1\n    should see this when i >= 0\n    should NOT see this when i == 0\n    should see this when i >= 1\n    should also see this when i >= 1\n    should always see this",
-  "stderr": "",
-  "path": "",
-  "exit_code": 0
-}

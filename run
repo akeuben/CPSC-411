@@ -1,2 +1,0 @@
-#!/usr/bin/env bash
-./main.py $1 > /tmp/jmm.s && spim -file /tmp/jmm.s

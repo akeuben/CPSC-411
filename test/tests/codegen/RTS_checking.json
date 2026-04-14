@@ -1,6 +1,0 @@
-{
-  "stdout": "Loaded: /home/profs/aycock/411/sw/share/spim/exceptions.s\nShould print \"true false 123 -123 abc\"\ntrue false 123 -123 abc",
-  "stderr": "",
-  "path": "",
-  "exit_code": 0
-}

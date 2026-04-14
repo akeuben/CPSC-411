@@ -1,6 +1,0 @@
-// division by zero, to be caught at run-time
-
-main() {
-	printi(123/0);
-	prints("\n");
-}
