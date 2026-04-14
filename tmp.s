@@ -48,52 +48,34 @@ STDL4:				# loop conditional
 	jr $ra
 
 .text
-sym7:
-	addi $sp, $sp, -4
-	sw $ra, 0($sp)
-.data
-L2:
-.byte 17, 115, 104, 111, 117, 108, 100, 32, 110, 111, 116, 32, 112, 114, 105, 110, 116, 10
-.text
-	la $s6, L2
-	move $a0, $s6
-	jal sym1
-	move $s6, $v0
-	li $s6, 1
-	move $v0, $s6
-	j L1
-.data
-L3:
-.byte 59, 101, 114, 114, 111, 114, 58, 32, 102, 117, 110, 99, 116, 105, 111, 110, 32, 116, 101, 115, 116, 32, 109, 117, 115, 116, 32, 114, 101, 116, 117, 114, 110, 32, 97, 32, 118, 97, 108, 117, 101, 32, 97, 116, 32, 111, 114, 32, 110, 101, 97, 114, 32, 108, 105, 110, 101, 32, 49, 10
-.text
-	la $a0, L3
-	jal sym1
-	jal sym6
-L1:
-	lw $ra, 0($sp)
-	addi $sp, $sp, 4
-	jr $ra
 main:
 	addi $sp, $sp, -8
 	sw $ra, 0($sp)
 	sw $zero, 4($sp)
-	li $s6, 1
-	move $s6, $s6
-	bne $s6, $zero, L5
-	addi $sp, $sp, -4
-	sw $s6, 0($sp)
-	jal sym7
-	addi $sp, $sp, 4
-	lw $s6, 0($sp)
-	move $s5, $v0
-	move $s6, $s5
-L5:
+	li $s6, 0
 	sw $s6, 4($sp)
 	lw $s6, 4($sp)
-	move $a0, $s6
-	jal sym3
-	move $s6, $v0
+	beq $s6, $zero, L3
+.data
 L4:
+.byte 5, 116, 114, 117, 101, 10
+.text
+	la $s6, L4
+	move $a0, $s6
+	jal sym1
+	move $s6, $v0
+	j L2
+L3:
+.data
+L5:
+.byte 6, 102, 97, 108, 115, 101, 10
+.text
+	la $s6, L5
+	move $a0, $s6
+	jal sym1
+	move $s6, $v0
+L2:
+L1:
 	lw $ra, 0($sp)
 	addi $sp, $sp, 8
 	jal sym6

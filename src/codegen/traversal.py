@@ -99,6 +99,49 @@ class FunctionBodyTraversal(AstTraversal):
 
         self.prune()
 
+    def n_ifElseStmt(self, node: Ast):
+        labelEnd = self.alloc.label.alloc()
+        labelElse = self.alloc.label.alloc()
+
+        traversal = ExpressionTraversal(self.codegen, self.alloc, self.stack)
+        traversal.preorder(node[0])
+
+        register = node[0].reg
+        self.alloc.register.free(register)
+
+        self.codegen.outputJumpZero(register, labelElse)
+
+        traversal = FunctionBodyTraversal(self.codegen, self.alloc, self.stack, self.retLabel)
+        traversal.preorder(node[1])
+
+        self.codegen.outputJump(labelEnd)
+        self.codegen.outputLabel(labelElse)
+
+        traversal = FunctionBodyTraversal(self.codegen, self.alloc, self.stack, self.retLabel)
+        traversal.preorder(node[2])
+
+        self.codegen.outputLabel(labelEnd)
+
+        self.prune()
+
+    def n_ifStmt(self, node: Ast):
+        label = self.alloc.label.alloc()
+
+        traversal = ExpressionTraversal(self.codegen, self.alloc, self.stack)
+        traversal.preorder(node[0])
+
+        register = node[0].reg
+        self.alloc.register.free(register)
+
+        self.codegen.outputJumpZero(register, label)
+
+        traversal = FunctionBodyTraversal(self.codegen, self.alloc, self.stack, self.retLabel)
+        traversal.preorder(node[1])
+
+        self.codegen.outputLabel(label)
+
+        self.prune()
+
 class ExpressionTraversal(AstTraversal):
 
     def __init__(self, codegen: Codegen, alloc: AllocatorBundle, stack: StackAllocator):
