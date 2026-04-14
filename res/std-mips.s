@@ -2,7 +2,8 @@
 divzeromsg: 
     .byte 24 
     .ascii "error: division by zero\n"
-
+lstread:
+    .word -2
 .text
 handledivzero:
     la $a0, divzeromsg
@@ -13,14 +14,15 @@ handledivzero:
 sym5:
 	li $v0, 12
     syscall
-    move $a0, $v0
-    li $v0, 1 
-    syscall
-    move $v0, $a0
+    li $t0, 10
+    bne $v0, $t0, STDL0
+    lw $t1, lstread 
+    bne $t1, $t0, STDL0 
+    li $v0, -1
 	jr $ra
 
 STDL0:
-    li $v0, -1 
+    sw $v0, lstread 
     jr $ra
 
 sym6:
