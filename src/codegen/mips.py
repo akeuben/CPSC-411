@@ -52,8 +52,6 @@ class MipsCodegen(Codegen):
             elif sym in formals:
                 print(f"\tsw $a{i}, {offset}($sp)")
                 i += 1
-            else:
-                print(f"\tsw $zero, {offset}($sp)")
 
     def outputFunctionPostamble(self, stackInfo: StackAllocator):
         self.switchMode(AsmMode.TEXT)

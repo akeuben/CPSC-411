@@ -12,10 +12,13 @@ handledivzero:
 
 sym5:
 	li $v0, 12
-	syscall
-    li $t0, 10 
-    beq $v0, $t0, STDL0
+    syscall
+    move $a0, $v0
+    li $v0, 1 
+    syscall
+    move $v0, $a0
 	jr $ra
+
 STDL0:
     li $v0, -1 
     jr $ra
